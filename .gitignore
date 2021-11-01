@@ -13,6 +13,8 @@
 .*.swp
 */.ipynb_checkpoints/*
 *.pyc
+*.coverage
+*.h5
 
 # Project files
 .ropeproject
@@ -55,3 +57,4 @@ backup/*
 *.png
 
 venv
+/tests/out_restricted_prior/
