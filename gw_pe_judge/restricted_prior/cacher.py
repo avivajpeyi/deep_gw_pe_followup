@@ -9,6 +9,7 @@ plt.style.use(
 
 DATA_KEY = "probabilities"
 
+CMAP = "hot"
 
 def store_probabilities(df: pd.DataFrame, fname: str):
     assert ".h5" in fname, f"{fname} is invalid"
@@ -35,18 +36,41 @@ def load_probabilities(fname) -> pd.DataFrame:
 
 def plot_probs(x, y, p, xlabel, ylabel, plabel, fname):
     plt.close('all')
+    fig, axes = plt.subplots(2,1, figsize=(4, 8))
+    ax = axes[0]
+    if isinstance(p, pd.Series):
+        z = p.values
+    else:
+        z = p.copy()
+    z[z == -np.inf] = np.nan
     try:
-        p = np.nan_to_num(p)
-        plt.tricontour(x, y, p, 15, linewidths=0.5, colors='k')
-        cmap = plt.tricontourf(
-            x, y, p, 15,
-            norm=plt.Normalize(vmax=abs(p).max(), vmin=-abs(p).max()),
-            cmap='inferno'
+        # p = np.nan_to_num(p)
+        ax.tricontour(x, y, z, 15, linewidths=0.5, colors='k')
+        cmap = ax.tricontourf(
+            x, y, z, 15,
+            vmin=np.nanmin(z), vmax=np.nanmax(z),
+            # norm=plt.Normalize(vmax=abs(p).max(), vmin=-abs(p).max()),
+            cmap=CMAP
         )
     except Exception:
-        cmap = plt.scatter(x, y, c=p, cmap='inferno')
-    plt.colorbar(cmap, label=plabel)
-    plt.ylabel(ylabel)
-    plt.xlabel(xlabel)
-    plt.tight_layout()
-    plt.savefig(fname)
+        cmap = ax.scatter(x, y, c=p, cmap=CMAP)
+    # ax.colorbar(cmap, label=plabel)
+
+    x = np.unique(x.values)
+    y = np.unique(y.values)
+    X, Y = np.meshgrid(x, y)
+
+    Z = z.reshape(len(y), len(x))
+
+    ax = axes[1]
+    ax.pcolor(X, Y, Z, cmap=CMAP, vmin=np.nanmin(z), vmax=np.nanmax(z))
+
+
+    for ax in axes:
+        ax.set_ylabel(ylabel)
+        ax.set_xlabel(xlabel)
+
+    # fig.tight_layout()
+    # fig.savefig(fname)
+
+    return fig, ax

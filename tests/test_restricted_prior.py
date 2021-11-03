@@ -39,6 +39,7 @@ class TestVersion(unittest.TestCase):
     def test_pcos1_given_a1_xeff_q(self):
         self.p_cos1_a1_computer(xeff=0.3, q=0.9, fname=f'{self.outdir}/pcos1a1_test1.png')
 
+
     def test_pcos2_given_cos1_a1_xeff_q(self):
         self.p_cos2_computer(xeff=0.3,q=0.9, cos1=0.4, a1=0.2,fname=f'{self.outdir}/pcos2_test1.png')
 
@@ -58,19 +59,36 @@ class TestVersion(unittest.TestCase):
 
 
     def p_cos1_a1_computer(self,xeff=0.3, q=0.9, fname='pa1_test.png'):
-        dc1, da1 = 0.01, 0.01
+        mc_integral_n =int(5e4)
+        dcos1, da1 = 0.01, 0.005
         a1s = np.arange(0, 1, da1)
-        cos1s = np.arange(-1, 1, dc1)
+        cos1s = np.arange(-1, 1, dcos1)
 
-        data = dict(a1=np.array([]), cos1=np.array([]), p=np.array([]))
-        for a1 in tqdm(a1s):
-            p_cos1_for_a1 = Parallel(n_jobs=num_cores)(delayed(get_p_cos1_given_xeff_q_a1)(cos1, a1, xeff, q,) for cos1 in cos1s)
-            data['a1'] = np.append(data['a1'], np.array([a1 for _ in cos1s]))
-            data['cos1'] = np.append(data['cos1'], cos1s)
-            data['p'] = np.append(data['p'], p_cos1_for_a1)
-        data = pd.DataFrame(data)
-        store_probabilities(data, f"{self.outdir}/cached_pcos1a1.h5")
-        plot_probs(data.a1, data.cos1, data.p, plabel='p', xlabel='a1', ylabel='cos1', fname=fname)
+        samples_fname =  f"{self.outdir}/cached_pcos1a1.h5"
+        if os.path.isfile(samples_fname):
+            data = load_probabilities(samples_fname)
+        else:
+            data = dict(a1=np.array([]), cos1=np.array([]), p=np.array([]))
+            for a1 in tqdm(a1s):
+                p_cos1_for_a1 = Parallel(n_jobs=num_cores)(delayed(get_p_cos1_given_xeff_q_a1)(cos1, a1, xeff, q, mc_integral_n) for cos1 in cos1s)
+                data['a1'] = np.append(data['a1'], np.array([a1 for _ in cos1s]))
+                data['cos1'] = np.append(data['cos1'], cos1s)
+                data['p'] = np.append(data['p'], p_cos1_for_a1)
+            data = pd.DataFrame(data)
+            store_probabilities(data, f"{self.outdir}/cached_pcos1a1.h5")
+
+        s = self.sample_uniform_dist(1000, q, xeff)
+        fig, axes = plot_probs(data.a1, data.cos1, data.p, plabel='p', xlabel='a1', ylabel='cos1', fname=fname)
+        for ax in axes:
+            ax.scatter(s.a1, s.cos1, color='white')
+        fig.tight_layout()
+        fig.savefig(fname)
+        fig, axes = plot_probs(data.a1, data.cos1, np.log(data.p), plabel='lnp', xlabel='a1', ylabel='cos1', fname=fname.replace(".png", "_lnp.png"))
+        for ax in axes:
+            ax.scatter(s.a1, s.cos1, color='white')
+        fig.tight_layout()
+        fig.savefig(fname.replace(".png", "_lnp.png"))
+
 
 
     def p_a1_computer(self, xeff=0.3, q=0.9, fname='pa1_test.png'):
@@ -87,14 +105,7 @@ class TestVersion(unittest.TestCase):
         data = dict(x=np.array([]), y=np.array([]))
         for i in range(10):
             tolerance = 0.01
-            s = pd.DataFrame(PriorDict(dict(
-                a1=Uniform(0, 1),
-                a2=Uniform(0, 1),
-                cos1=Uniform(-1, 1),
-                cos2=Uniform(-1, 1),
-                q=DeltaFunction(q),
-            )).sample(n))
-            s['xeff'] = calc_xeff(**s.to_dict('list'))
+            s = self.sample_uniform_dist(n,q)
             s = s[np.abs(s['xeff'] - xeff) <= tolerance]
             p_a1_rej, bins = np.histogram(s.a1, bins=a1s, density=True)
             p_a1_rej = p_a1_rej / np.sum(p_a1_rej) / da1
@@ -113,6 +124,20 @@ class TestVersion(unittest.TestCase):
         ax.legend()
         plt.tight_layout()
         fig.savefig(fname)
+
+
+    def sample_uniform_dist(self, n, q, xeff, xeff_tol=0.01):
+        s = pd.DataFrame(PriorDict(dict(
+            a1=Uniform(0, 1),
+            a2=Uniform(0, 1),
+            cos1=Uniform(-1, 1),
+            cos2=Uniform(-1, 1),
+            q=DeltaFunction(q),
+        )).sample(n))
+        s['xeff'] = calc_xeff(**s.to_dict('list'))
+        s = s[np.abs(s['xeff'] - xeff) <= xeff_tol]
+        return s
+
 
 
 def plot_ci(x, y, ax, label='', alpha=0.7, zorder=-10):
