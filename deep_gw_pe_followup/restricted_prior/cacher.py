@@ -58,7 +58,7 @@ def plot_probs(x, y, p, xlabel, ylabel, plabel, fname):
 
     x = np.unique(x.values)
     y = np.unique(y.values)
-    X, Y = np.meshgrid(x, y)
+    X, Y = np.meshgrid(x, y,indexing = 'ij')
 
     Z = z.reshape(len(y), len(x))
 
@@ -73,4 +73,4 @@ def plot_probs(x, y, p, xlabel, ylabel, plabel, fname):
     # fig.tight_layout()
     # fig.savefig(fname)
 
-    return fig, ax
+    return fig, axes

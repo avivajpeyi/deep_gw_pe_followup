@@ -5,9 +5,9 @@ from importlib import import_module
 from setuptools import setup, find_packages
 
 # Package meta-data.
-NAME = 'gw_pe_judge'
+NAME = 'deep_gw_pe_followup'
 SHORT_DESCRIPTION = "Helps arbitrate which PE results are more probable"
-URL = "https://github.com/avivajpeyi/gw_pe_judge"
+URL = "https://github.com/avivajpeyi/deep_gw_pe_followup"
 AUTHOR = 'Avi Vajpeyi'
 EMAIL = 'avi.vajpeyi@gmail.com'
 LICENSE = 'MIT'
@@ -58,7 +58,7 @@ setup(name=NAME,
       long_description_content_type='text/x-rst',
       license=LICENSE,
       url=URL,
-      packages=find_packages(include=["gw_pe_judge*"],
+      packages=find_packages(include=["deep_gw_pe_followup*"],
                              exclude=["tests*", "docs*"]),
       include_package_data=True,
       install_requires=INSTALL_REQUIRED,

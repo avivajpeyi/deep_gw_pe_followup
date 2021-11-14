@@ -1,4 +1,4 @@
-from gw_pe_judge.version import __version__
+from deep_gw_pe_followup.version import __version__
 
 
 class TestVersion:

@@ -1,6 +1,6 @@
-from gw_pe_judge.restricted_prior.prior import (get_p_a1_given_xeff_q, get_p_cos1_given_xeff_q_a1, get_p_cos2_given_xeff_q_a1_cos1)
-from gw_pe_judge.restricted_prior.conversions import calc_xeff
-from gw_pe_judge.restricted_prior.cacher import store_probabilities, plot_probs, load_probabilities
+from deep_gw_pe_followup.restricted_prior.prior import (get_p_a1_given_xeff_q, get_p_cos1_given_xeff_q_a1, get_p_cos2_given_xeff_q_a1_cos1)
+from deep_gw_pe_followup.restricted_prior.conversions import calc_xeff
+from deep_gw_pe_followup.restricted_prior.cacher import store_probabilities, plot_probs, load_probabilities
 import unittest
 import os
 import matplotlib.pyplot as plt
@@ -77,15 +77,19 @@ class TestVersion(unittest.TestCase):
             data = pd.DataFrame(data)
             store_probabilities(data, f"{self.outdir}/cached_pcos1a1.h5")
 
-        s = self.sample_uniform_dist(1000, q, xeff)
+        s = self.sample_uniform_dist(int(1e6), q, xeff)
         fig, axes = plot_probs(data.a1, data.cos1, data.p, plabel='p', xlabel='a1', ylabel='cos1', fname=fname)
         for ax in axes:
-            ax.scatter(s.a1, s.cos1, color='white')
+            ax.plot(s.a1, s.cos1, ',w')
+            ax.set_xlim(0,1)
+            ax.set_ylim(-1, 1)
         fig.tight_layout()
         fig.savefig(fname)
         fig, axes = plot_probs(data.a1, data.cos1, np.log(data.p), plabel='lnp', xlabel='a1', ylabel='cos1', fname=fname.replace(".png", "_lnp.png"))
         for ax in axes:
-            ax.scatter(s.a1, s.cos1, color='white')
+            ax.plot(s.a1, s.cos1, ',w')
+            ax.set_xlim(0,1)
+            ax.set_ylim(-1, 1)
         fig.tight_layout()
         fig.savefig(fname.replace(".png", "_lnp.png"))
 
@@ -136,6 +140,7 @@ class TestVersion(unittest.TestCase):
         )).sample(n))
         s['xeff'] = calc_xeff(**s.to_dict('list'))
         s = s[np.abs(s['xeff'] - xeff) <= xeff_tol]
+
         return s
 
 

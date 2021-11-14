@@ -22,14 +22,14 @@ sys.path.insert(0, root_path)
 
 # -- Project information -----------------------------------------------------
 
-project = 'gw_pe_judge'
+project = 'deep_gw_pe_followup'
 author = 'Avi Vajpeyi'
 copyright = '{}, {}'.format(datetime.datetime.now().year, author)
 
 
 # The short X.Y version
 local_vars = dict()
-version_path = os.path.join(root_path, "gw_pe_judge", "version.py")
+version_path = os.path.join(root_path, "deep_gw_pe_followup", "version.py")
 exec(open(version_path).read(), local_vars)
 version = local_vars["__version__"]
 # The full version, including alpha/beta/rc tags
@@ -161,7 +161,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'gw_pe_judge', project + ' Documentation', [author], 1)
+    (master_doc, 'deep_gw_pe_followup', project + ' Documentation', [author], 1)
 ]
 
 
