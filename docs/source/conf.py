@@ -124,7 +124,7 @@ html_static_path = []
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'gw_pe_judge_docs'
+htmlhelp_basename = 'deep_gw_pe_followup_docs'
 
 
 # -- Options for LaTeX output ------------------------------------------------

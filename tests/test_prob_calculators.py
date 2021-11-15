@@ -1,15 +1,22 @@
-from deep_gw_pe_followup.restricted_prior.prior import (get_p_a1_given_xeff_q, get_p_cos1_given_xeff_q_a1, get_p_cos2_given_xeff_q_a1_cos1)
-from deep_gw_pe_followup.restricted_prior.conversions import calc_xeff
-from deep_gw_pe_followup.restricted_prior.cacher import store_probabilities, plot_probs, load_probabilities
-import unittest
-import os
-import matplotlib.pyplot as plt
-from bilby.core.prior import PriorDict, Uniform, DeltaFunction
-import pandas as pd
-import numpy as np
 import multiprocessing
+import os
+import unittest
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from bilby.core.prior import PriorDict, Uniform, DeltaFunction
 from joblib import Parallel, delayed
 from tqdm import tqdm
+
+
+
+from deep_gw_pe_followup.restricted_prior.cacher import store_probabilities, plot_probs, load_probabilities
+from deep_gw_pe_followup.restricted_prior.conversions import calc_xeff
+from deep_gw_pe_followup.restricted_prior.prob_calculators import (get_p_a1_given_xeff_q, get_p_cos1_given_xeff_q_a1,
+                                                                   get_p_cos2_given_xeff_q_a1_cos1)
+
+from deep_gw_pe_followup.restricted_prior.prior import RestrictedPrior
 
 num_cores = multiprocessing.cpu_count()
 
@@ -20,7 +27,7 @@ plt.style.use(
 CLEAN_AFTER = False
 
 
-class TestVersion(unittest.TestCase):
+class TestProbCalculators(unittest.TestCase):
 
     def setUp(self):
         self.outdir = "./out_restricted_prior"
@@ -95,15 +102,17 @@ class TestVersion(unittest.TestCase):
 
 
 
-    def p_a1_computer(self, xeff=0.3, q=0.9, fname='pa1_test.png'):
-        n = int(1e5)
+    def p_a1_computer(self, xeff=0.3, q=0.9, fname='pa1_test.png', n=int(1e5)):
 
-        da1 = 0.01
+        mc_integral_n =int(5e4)
+        dcos1, da1 = 0.01, 0.005
         a1s = np.arange(0, 1, da1)
+        cos1s = np.arange(-1, 1, dcos1)
 
-        # analytical p_a1
-        p_a1 = np.array([get_p_a1_given_xeff_q(xeff=xeff,q=q, a1=a1) for a1 in a1s])
-        p_a1 = p_a1 / np.sum(p_a1) / da1
+        p = RestrictedPrior(q=q, xeff=xeff, build_cache=False).get_a1_prior()
+        p_a1 = p.prob(a1s)
+
+
 
         # rejection-sampled distribution
         data = dict(x=np.array([]), y=np.array([]))
@@ -140,7 +149,6 @@ class TestVersion(unittest.TestCase):
         )).sample(n))
         s['xeff'] = calc_xeff(**s.to_dict('list'))
         s = s[np.abs(s['xeff'] - xeff) <= xeff_tol]
-
         return s
 
 
