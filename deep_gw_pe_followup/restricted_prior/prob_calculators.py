@@ -25,7 +25,7 @@ def get_p_cos1_given_xeff_q_a1(cos1, a1, xeff, q, n=int(1e4)):
     return np.mean(integrand)
 
 
-def get_p_cos2_given_xeff_q_a1_cos1(cos2, a1, xeff, q, cos1, n=int(1e4)):
+def get_p_cos2_given_xeff_q_a1_cos1(cos2, a1, xeff, q, cos1):
     a2 = calc_a2(xeff=xeff, q=q, cos1=cos1, cos2=cos2, a1=a1)
     integrand = zero_nonvalid_a2(jacobian(q, cos2), a2)
     return np.mean(integrand)
