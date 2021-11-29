@@ -1,0 +1,1 @@
+from .model import lal_binary_black_hole_qxeff_restricted

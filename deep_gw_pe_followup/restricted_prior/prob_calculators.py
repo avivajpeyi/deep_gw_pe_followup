@@ -1,6 +1,7 @@
-from .conversions import calc_a2
 import numpy as np
 from numpy.random import uniform as unif
+
+from .conversions import calc_a2
 
 
 def zero_nonvalid_a2(p, a2):

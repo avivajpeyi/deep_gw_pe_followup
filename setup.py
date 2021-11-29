@@ -1,8 +1,9 @@
 import os
 from distutils.text_file import TextFile
-from pathlib import Path
 from importlib import import_module
-from setuptools import setup, find_packages
+from pathlib import Path
+
+from setuptools import find_packages, setup
 
 # Package meta-data.
 NAME = 'deep_gw_pe_followup'

@@ -1,5 +1,6 @@
 import numpy as np
 
+
 @np.vectorize
 def calc_a2(xeff, q, cos1, cos2, a1):
     return (xeff * (1 + q) - a1 * cos1) / (q * cos2)
