@@ -1,2 +1,3 @@
 bilby
+bilby_pipe
 pandas

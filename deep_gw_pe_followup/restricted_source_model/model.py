@@ -83,15 +83,23 @@ def lal_binary_black_hole_qxeff_restricted(
     dict: A dictionary with the plus and cross polarisation strain modes
     """
     a_2 = calc_a2(xeff=chi_eff, q=mass_ratio, cos1=np.cos(tilt_1), cos2=np.cos(tilt_2), a1=a_1)
+    param = dict(
+        mass_1=mass_1, mass_2=mass_2,
+        luminosity_distance=luminosity_distance, theta_jn=theta_jn, phase=phase,
+        a_1=a_1, tilt_1=tilt_1, tilt_2=tilt_2, phi_12=phi_12,
+        phi_jl=phi_jl
+    )
+
+    if (a_2 < 0) or (a_2 > 1):
+        logger.error(f"a_2 oustside range: {a_2}\n{param}")
+
 
     waveform_kwargs = dict(
         waveform_approximant='IMRPhenomPv2', reference_frequency=50.0,
         minimum_frequency=20.0, maximum_frequency=frequency_array[-1],
-        catch_waveform_errors=False, pn_spin_order=-1, pn_tidal_order=-1,
+        catch_waveform_errors=True, pn_spin_order=-1, pn_tidal_order=-1,
         pn_phase_order=-1, pn_amplitude_order=0)
     waveform_kwargs.update(kwargs)
+
     return _base_lal_cbc_fd_waveform(
-        frequency_array=frequency_array, mass_1=mass_1, mass_2=mass_2,
-        luminosity_distance=luminosity_distance, theta_jn=theta_jn, phase=phase,
-        a_1=a_1, a_2=a_2, tilt_1=tilt_1, tilt_2=tilt_2, phi_12=phi_12,
-        phi_jl=phi_jl, **waveform_kwargs)
+        frequency_array=frequency_array, a_2=a_2, **param, **waveform_kwargs)

@@ -4,6 +4,7 @@ chi_eff=0.1
 a_1 = deep_gw_pe_followup.restricted_prior.PlaceholderPrior(name='a_1')
 cos_tilt_1 = deep_gw_pe_followup.restricted_prior.PlaceholderPrior(name='cos_tilt_1')
 cos_tilt_2 = deep_gw_pe_followup.restricted_prior.PlaceholderPrior(name='cos_tilt_2')
+a_2 = Constraint(name="a_2", minimum=0, maximum=1)
 
 # remaining spin params
 phi_12 = Uniform(name='phi_12', minimum=0, maximum=2 * np.pi, boundary='periodic')

@@ -4,6 +4,7 @@ import os
 import shutil
 
 import bilby
+import datetime
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -107,7 +108,8 @@ class RestrictedPrior(CBCPriorDict):
             logger.debug(f"Loaded {fname}")
         else:
             logger.debug(f"Creating {fname}")
-            a1s, da1 = X['a1'], D['a1']
+            a1s= X['a1']
+            da1 = a1s[1] - a1s[0]
             p_a1 = Parallel(n_jobs=num_cores)(
                 delayed(get_p_a1_given_xeff_q)(a1, self.xeff, self.q, self.mcmc_n * 100)
                 for a1 in tqdm(a1s, desc="Building a1 cache"))
@@ -158,9 +160,10 @@ class RestrictedPrior(CBCPriorDict):
             latex_label=r"$\cos \theta_1$"
         )
 
-    # FIXME : Eric suggested this can be O(1), atm it is O(n)
+
     def get_cos2_prior(self, given_a1, given_cos1):
-        cos2s, dc2 = X['cos2'], D['cos2']
+        cos2s = X['cos2']
+        dc2 = cos2s[1] - cos2s[0]
 
         args = (given_a1, self.xeff, self.q, given_cos1)
         p_cos2 = np.array([get_p_cos2_given_xeff_q_a1_cos1(cos2, *args) for cos2 in cos2s])
@@ -290,3 +293,25 @@ class RestrictedPrior(CBCPriorDict):
             axes[i].set_xlabel(label)
         plt.tight_layout()
         plt.savefig(fname)
+
+    def time_prior(self, n_evaluations=100):
+        """ Times the prior evaluation and print an info message
+
+        Parameters
+        ==========
+        n_evaluations: int
+            The number of evaluations to estimate the evaluation time from
+
+        """
+
+        t1 = datetime.datetime.now()
+        for _ in range(n_evaluations):
+            theta = self.sample()
+        total_time = (datetime.datetime.now() - t1).total_seconds()
+        self._eval_time = total_time / n_evaluations
+
+        if self._eval_time == 0:
+            self._eval_time = np.nan
+            logger.info("Unable to measure single prior sample time")
+        else:
+            logger.info("Single prior evaluation took {:.3e} s".format(self._eval_time))

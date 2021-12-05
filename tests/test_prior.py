@@ -47,7 +47,7 @@ class TestPrior(unittest.TestCase):
         self.assertLess(duration, 5)
 
     def test_prior_prob_plot(self):
-        p = prior.RestrictedPrior(filename="../studies/restricted.prior", clean=False)
+        p = prior.RestrictedPrior(filename="../studies/fast_injection/restricted.prior", clean=False)
         N = 5000
 
         t0 = time.time()
@@ -116,7 +116,7 @@ class TestPrior(unittest.TestCase):
         return s
 
     def test_prior_from_file(self):
-        r = prior.RestrictedPrior(filename="../studies/restricted.prior")
+        r = prior.RestrictedPrior(filename="../studies/fast_injection/restricted.prior")
         s = pd.DataFrame(r.sample(1000))
         range = [RANGES.get(k, (min(s[k]), max(s[k]))) for k in s.keys()]
         labels = [k.replace("_", " ") for k in s.keys()]
@@ -127,7 +127,7 @@ class TestPrior(unittest.TestCase):
 
     def test_sample_from_unit_cube(self):
         """from bilby.core.base_sampler"""
-        r = prior.RestrictedPrior(filename="../studies/restricted.prior")
+        r = prior.RestrictedPrior(filename="../studies/fast_injection/restricted.prior")
         for i in range(100):
             unit = np.random.rand(r.ndim)
             theta = r.rescale(r.search_params, unit)
@@ -146,7 +146,7 @@ class TestPrior(unittest.TestCase):
         param = {'a_1': 0.11555590351574924, 'cos_tilt_1': -0.6656216267247913, 'phi_12': 0.0380814382, 'phi_jl': 0.65953863,
          'chirp_mass': 0.349375531, 'luminosity_distance': 0.927999428, 'dec': 0.470610876, 'ra': 0.0280144439,
          'theta_jn': 0.952277741, 'psi': 0.578920808, 'phase': 0.860491949}
-        r = prior.RestrictedPrior(filename="../studies/restricted.prior")
+        r = prior.RestrictedPrior(filename="../studies/fast_injection/restricted.prior")
         r.debug_sample(param, f'{self.outdir}/param_test.png')
 
     @staticmethod

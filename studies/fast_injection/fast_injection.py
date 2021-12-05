@@ -5,7 +5,9 @@ from deep_gw_pe_followup.restricted_prior.prior import RestrictedPrior
 from deep_gw_pe_followup.restricted_source_model import \
     lal_binary_black_hole_qxeff_restricted
 
-import datetime
+import multiprocessing
+
+CPU = multiprocessing.cpu_count()
 
 duration = 4.
 sampling_frequency = 2048.
@@ -43,8 +45,8 @@ ifos.inject_signal(waveform_generator=waveform_generator,
                    parameters=injection_parameters)
 
 priors = RestrictedPrior("restricted.prior")
-priors['geocent_time'] = injection_parameters['geocent_time']
-# priors.validate_prior(duration, minimum_frequency)
+for param in ['geocent_time', 'phi_12', 'phi_jl', 'luminosity_distance', 'dec', 'ra', 'theta_jn', 'psi', 'phase']:
+    priors[param] = injection_parameters[param]
 
 
 logger.info("Setting up likelihood")
@@ -53,39 +55,14 @@ likelihood = bilby.gw.GravitationalWaveTransient(
 )
 
 
-def _time_likelihood(self, n_evaluations=100):
-    """ Times the likelihood evaluation and print an info message
-
-    Parameters
-    ==========
-    n_evaluations: int
-        The number of evaluations to estimate the evaluation time from
-
-    """
-
-    t1 = datetime.datetime.now()
-    for _ in range(n_evaluations):
-        theta = self.priors.sample_subset_constrained_as_array(
-            self._search_parameter_keys, size=1)[:, 0]
-        self.log_likelihood(theta)
-    total_time = (datetime.datetime.now() - t1).total_seconds()
-    self._log_likelihood_eval_time = total_time / n_evaluations
-
-    if self._log_likelihood_eval_time == 0:
-        self._log_likelihood_eval_time = np.nan
-        logger.info("Unable to measure single likelihood time")
-    else:
-        logger.info("Single likelihood evaluation took {:.3e} s"
-                    .format(self._log_likelihood_eval_time))
+priors.time_prior()
 
 
-try:
-    result = bilby.run_sampler(
-        likelihood=likelihood, priors=priors, sampler='dynesty', npoints=1000,
-        injection_parameters=injection_parameters, outdir=outdir, label=label)
-except Exception as e:
-    print(e)
-    print("wait!")
+
+result = bilby.run_sampler(
+    likelihood=likelihood, priors=priors, sampler='dynesty', npoints=512,
+    injection_parameters=injection_parameters, outdir=outdir, label=label, npool=1)
+
 
 
 # Make a corner plot.
