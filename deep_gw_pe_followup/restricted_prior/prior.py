@@ -22,6 +22,7 @@ from .placeholder_prior import PlaceholderDelta
 from .prob_calculators import (get_p_a1_given_xeff_q,
                                get_p_cos1_given_xeff_q_a1,
                                get_p_cos2_given_xeff_q_a1_cos1)
+from .plotting.hist2d import plot_heatmap
 
 from bilby.core.utils import logger
 
@@ -54,6 +55,7 @@ def find_boundary(x, y):
     start, end = min(vals), max(vals)
     return start, end
 
+
 class RestrictedPrior(CBCPriorDict):
     def __init__(self, filename=None, dictionary=None, clean=False, build_cache=True, mcmc_n=MCMC_N, cache=None):
         super().__init__(dictionary=dictionary, filename=filename, conversion_function=None)
@@ -74,7 +76,7 @@ class RestrictedPrior(CBCPriorDict):
             self['cos_tilt_1'] = self.get_cos1_prior(given_a1=0.5)
             self['cos_tilt_2'] = self.get_cos2_prior(given_a1=0.5, given_cos1=0.5)
 
-        self.assert_no_constraint_priors() # we have forced the normalisation_constraint_factor = 1
+        self.assert_no_constraint_priors()  # we have forced the normalisation_constraint_factor = 1
 
     @property
     def cache(self):
@@ -108,7 +110,7 @@ class RestrictedPrior(CBCPriorDict):
             logger.debug(f"Loaded {fname}")
         else:
             logger.debug(f"Creating {fname}")
-            a1s= X['a1']
+            a1s = X['a1']
             da1 = a1s[1] - a1s[0]
             p_a1 = Parallel(n_jobs=num_cores)(
                 delayed(get_p_a1_given_xeff_q)(a1, self.xeff, self.q, self.mcmc_n * 100)
@@ -159,7 +161,6 @@ class RestrictedPrior(CBCPriorDict):
             minimum=min_b, maximum=max_b, name="cos_tilt_1",
             latex_label=r"$\cos \theta_1$"
         )
-
 
     def get_cos2_prior(self, given_a1, given_cos1):
         cos2s = X['cos2']
@@ -315,3 +316,15 @@ class RestrictedPrior(CBCPriorDict):
             logger.info("Unable to measure single prior sample time")
         else:
             logger.info("Single prior evaluation took {:.3e} s".format(self._eval_time))
+
+    def plot_cache(self):
+        """ Plot of a1 and 2D plot of a1-cos1 """
+        fig, axes = plt.subplots(2, 1, figsize=(5, 6), sharex=True)
+        axes[0].set_ylabel('p(a1)')
+        axes[1].set_ylabel('cos1')
+        axes[1].set_xlabel('a1')
+        axes[0].plot(self['a_1'].xx, self['a_1'].yy)
+        data = self.cached_cos1_data
+        plot_heatmap(x=data['a1'], y=data['cos1'], p=data['p_cos1'], ax=axes[1])
+        plt.tight_layout()
+        plt.savefig(f"{self.cache}/plot.png")

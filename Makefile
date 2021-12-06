@@ -1,6 +1,10 @@
-SOURCE_DIR = ./gw_pe_judge
+SOURCE_DIR = ./deep_gw_pe_followup
 
 .PHONY: clean help
+
+BIN=venv/bin/
+
+
 
 help:
 	clear;
@@ -14,11 +18,13 @@ help:
 	@echo "install_requirements   : Install all the packages listed in txt files in requirements folder.";
 	@echo "test                   : Run tests and generate coverage report.";
 	@echo "build_whl              : Build a python wheel package.";
+	@echo "venv                   : Build a python venv with pacakges installed.";
 
 # Clean the folder from build/test related folders
 clean: clean-build clean-pyc
 	rm -rf .mypy_cache/ .pytest_cache/
 	rm -f .coverage
+	rm -rf venv
 
 clean-pyc:
 	find . \( -name '*.pyc' -o -name '*.pyo' \) -exec rm -rf {} +
@@ -54,3 +60,17 @@ test:
 # build wheel package
 build_whl:
 	python setup.py bdist_wheel
+
+
+install: venv
+# 	: # Activate venv and install smthing inside
+	. venv/bin/activate && python setup.py develop
+	. venv/bin/activate && cd dependancies/bilby_pipe python setup.py develop
+	. venv/bin/activate && cd dependancies/parallel_bilby python setup.py develop
+# 	: # Other commands here
+
+venv:
+    : # Create venv if it doesn't exist
+    : # test -d venv || virtualenv -p python3 --no-site-packages venv
+	test -d venv || python -m venv venv
+

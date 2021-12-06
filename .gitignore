@@ -2,6 +2,8 @@ out*
 .ipynb_checkpoints
 *.ipynb
 
+venv
+
 # Temporary and binary files
 *cache*
 *~

@@ -62,6 +62,6 @@ def plot_heatmap(x, y, p, ax):
     y = np.unique(y.values)
     X, Y = np.meshgrid(x, y, indexing='ij')
 
-    Z = z.reshape(len(y), len(x))
+    Z = z.reshape(len(x), len(y))
 
     ax.pcolor(X, Y, Z, cmap=CMAP, vmin=np.nanmin(z), vmax=np.nanmax(z))

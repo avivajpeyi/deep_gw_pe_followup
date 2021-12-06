@@ -5,24 +5,19 @@ from deep_gw_pe_followup.restricted_prior.prior import RestrictedPrior
 from deep_gw_pe_followup.restricted_source_model import \
     lal_binary_black_hole_qxeff_restricted
 
-DURATION = 4.
+DURATION = 8
 SAMPLING_FREQ = 2048.
 MIN_FREQ = 20
 
-OUTDIR = 'outdir'
-LABEL = 'fast_tutorial'
+OUTDIR = 'outdir_serial'
+LABEL = 'serial'
 
 bilby.core.utils.setup_logger(outdir=OUTDIR, label=LABEL)
 logger = bilby.core.utils.logger
 
 np.random.seed(0)
 
-INJECTION_PARAM = {'a_1': 0.002029993860587983, 'cos_tilt_1': 0.30398947450543734,
-                   'cos_tilt_2': 0.9088301398360985, 'a_2': 0.6567943667372238, 'mass_ratio': 0.2, 'chi_eff': 0.1,
-                   'phi_12': 5.838675984634243, 'phi_jl': 4.9905128637161456, 'chirp_mass': 40.62153505079806,
-                   'luminosity_distance': 250, 'dec': 0.3261767928551774, 'ra': 2.6694652170836255,
-                   'theta_jn': 1.5324822247502017, 'psi': 2.7544433486044135, 'phase': 1.5585445420281385,
-                   'geocent_time': 0}
+INJECTION_PARAM = {'luminosity_distance': 800, 'mass_ratio': 0.26512986754630535, 'chirp_mass': 9.702165419247658, 'a_1': 0.9873737113225366, 'a_2': 0.8435528737659149, 'tilt_1': 1.0401383271620692, 'tilt_2': 2.5427989903091914, 'phi_12': 1.695426569783911, 'phi_jl': 3.3438963165263136, 'dec': 0.33364118287594846, 'ra': 0.6738167456098734, 'cos_theta_jn': -0.8684204854784665, 'psi': 2.06954952383973, 'phase': 0.8866172464617089, 'geocent_time': 0, 'theta_jn': 2.6228040981756555, 'chi_eff':0.24896368}
 
 
 def setup_liklihood(injection_parameters):
@@ -38,10 +33,10 @@ def setup_liklihood(injection_parameters):
         parameter_conversion=bilby.gw.conversion.convert_to_lal_binary_black_hole_parameters,
         waveform_arguments=waveform_arguments)
 
-    ifos = bilby.gw.detector.InterferometerList(['H1'])
+    ifos = bilby.gw.detector.InterferometerList(['H1', "L1"])
     ifos.set_strain_data_from_power_spectral_densities(
         sampling_frequency=SAMPLING_FREQ, duration=DURATION,
-        start_time=injection_parameters['geocent_time'] - 3)
+        start_time=injection_parameters['geocent_time'] - (DURATION -1))
     ifos.inject_signal(waveform_generator=waveform_generator,
                        parameters=injection_parameters)
 
@@ -52,9 +47,8 @@ def setup_liklihood(injection_parameters):
 
 def setup_priors(injection_parameters):
     logger.info("Setting up prior")
-    priors = RestrictedPrior("restricted.prior")
-    for param in ['geocent_time', 'phi_12', 'phi_jl', 'luminosity_distance', 'dec', 'ra', 'theta_jn', 'psi', 'phase']:
-        priors[param] = injection_parameters[param]
+    priors = RestrictedPrior("followup_pt1.prior")
+    priors.plot_cache()
     priors.time_prior()
     return priors
 
