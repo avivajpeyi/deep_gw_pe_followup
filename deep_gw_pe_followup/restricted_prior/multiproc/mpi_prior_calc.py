@@ -2,7 +2,7 @@ import numpy as np
 from mpi4py import MPI
 import time
 import tqdm as tqdm
-from restricted_prior.prob_calculators import get_p_cos1_given_xeff_q_a1, get_p_a1_given_xeff_q
+from ..prob_calculators import get_p_cos1_given_xeff_q_a1, get_p_a1_given_xeff_q
 
 comm = MPI.COMM_WORLD
 pe = comm.Get_rank()  # identity of this process (process element, sometimes called rank)
