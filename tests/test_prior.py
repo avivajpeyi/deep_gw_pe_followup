@@ -46,6 +46,11 @@ class TestPrior(unittest.TestCase):
         duration = time.time() - t0
         self.assertLess(duration, 5)
 
+    def test_bbh_prior_dict_conversion(self):
+        p = PriorDict(filename="../studies/fast_injection/restricted.prior")
+        r = prior.RestrictedPrior.from_bbh_priordict(p)
+        self.assertIsInstance(r, prior.RestrictedPrior)
+
     def test_prior_prob_plot(self):
         p = prior.RestrictedPrior(filename="../studies/fast_injection/restricted.prior", clean=False)
         N = 5000

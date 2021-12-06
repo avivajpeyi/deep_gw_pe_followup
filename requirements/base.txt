@@ -1,6 +1,7 @@
 bilby
 bilby_pipe
 parallel_bilby
+cached_property
 pandas
 joblib
 

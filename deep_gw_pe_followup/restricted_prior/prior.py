@@ -3,6 +3,8 @@ import multiprocessing
 import os
 import shutil
 
+from cached_property import cached_property
+
 import bilby
 import datetime
 import matplotlib.pyplot as plt
@@ -128,7 +130,7 @@ class RestrictedPrior(CBCPriorDict):
         return Interped(xx=a1, yy=p_a1, minimum=min_b, maximum=max_b, name="a_1", latex_label=r"$a_1$")
 
     # @functools.cached_property not present in 3.9 <
-    @functools.lru_cache(maxsize=128)
+    @cached_property
     def cached_cos1_data(self):
         fname = os.path.join(self.cache, "cos1_given_qxeffa1.h5")
         if os.path.isfile(fname):
@@ -147,6 +149,11 @@ class RestrictedPrior(CBCPriorDict):
             data = pd.DataFrame(data)
             store_probabilities(data, fname)
         return data
+
+    @classmethod
+    def from_bbh_priordict(cls, dict):
+        dict = {k:v for k,v in dict.items()}
+        return cls(dictionary=dict)
 
     def get_cos1_prior(self, given_a1, ):
         data = self.cached_cos1_data
