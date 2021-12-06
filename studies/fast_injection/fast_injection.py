@@ -52,7 +52,7 @@ def setup_liklihood(injection_parameters):
 
 def setup_priors(injection_parameters):
     logger.info("Setting up prior")
-    priors = RestrictedPrior("restricted.prior")
+    priors = RestrictedPrior(filename="restricted.prior")
     for param in ['geocent_time', 'phi_12', 'phi_jl', 'luminosity_distance', 'dec', 'ra', 'theta_jn', 'psi', 'phase']:
         priors[param] = injection_parameters[param]
     priors.time_prior()

@@ -57,7 +57,7 @@ def find_boundary(x, y):
 
 
 class RestrictedPrior(CBCPriorDict):
-    def __init__(self, filename=None, dictionary=None, clean=False, build_cache=True, mcmc_n=MCMC_N, cache=None):
+    def __init__(self, dictionary=None, filename=None, clean=False, build_cache=True, mcmc_n=MCMC_N, cache=None):
         super().__init__(dictionary=dictionary, filename=filename, conversion_function=None)
         self.q = (self['q'] if 'q' in self else self['mass_ratio']).peak
         self.xeff = (self['xeff'] if 'xeff' in self else self['chi_eff']).peak

@@ -21,10 +21,14 @@ help:
 	@echo "venv                   : Build a python venv with pacakges installed.";
 
 # Clean the folder from build/test related folders
-clean: clean-build clean-pyc
+clean: clean-build clean-pyc clean-macos-gunk
 	rm -rf .mypy_cache/ .pytest_cache/
 	rm -f .coverage
 	rm -rf venv
+
+
+clean-macos-gunk:
+	find . -name '.DS_Store' -type f -delete
 
 clean-pyc:
 	find . \( -name '*.pyc' -o -name '*.pyo' \) -exec rm -rf {} +

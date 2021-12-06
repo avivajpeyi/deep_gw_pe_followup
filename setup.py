@@ -22,7 +22,7 @@ def _parse_requirements(filename):
 
 
 try:
-    VERSION = import_module(NAME+".version").__version__
+    VERSION = import_module(NAME + ".version").__version__
 except Exception as e:
     print("Version information cannot be imported using "
           "'importlib.import_module' due to {}.".format(e))
@@ -31,14 +31,12 @@ except Exception as e:
     exec(version_path.read_text(), about)
     VERSION = about["__version__"]
 
-
 try:
     # Load README as description of package
     with open('README.rst', encoding="utf-8") as readme_file:
         LONG_DESCRIPTION = readme_file.read()
 except FileNotFoundError:
     LONG_DESCRIPTION = SHORT_DESCRIPTION
-
 
 # Requirements
 INSTALL_REQUIRED = _parse_requirements(os.path.join("requirements", "base.txt"))
@@ -48,7 +46,6 @@ DOC_REQUIRED = _parse_requirements(os.path.join("requirements", "doc.txt"))
 
 # What packages are optional?
 EXTRAS = {"docs": DOC_REQUIRED}
-
 
 setup(name=NAME,
       version=VERSION,
@@ -65,4 +62,11 @@ setup(name=NAME,
       install_requires=INSTALL_REQUIRED,
       tests_require=DEV_REQUIRED,
       extras_require=EXTRAS,
-      setup_requires=['wheel'])
+      setup_requires=['wheel'],
+      entry_points={
+          'console_scripts': [
+              'preprocess_prior=deep_gw_pe_followup.utils.adjust_pbilby_prior_json:main'
+          ]
+      },
+
+      )

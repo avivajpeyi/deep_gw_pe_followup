@@ -63,5 +63,6 @@ backup/*
 # plots
 *.png
 
+*.npz
 venv
 /tests/out_restricted_prior/
