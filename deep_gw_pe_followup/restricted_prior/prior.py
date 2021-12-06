@@ -140,8 +140,7 @@ class RestrictedPrior(CBCPriorDict):
             a1s, cos1s = X['a1'], X['cos1']
             data = dict(a1=np.array([]), cos1=np.array([]), p_cos1=np.array([]))
             for a1 in tqdm(a1s, desc=f"Building p_cos1 cache ({num_cores} cores)"):
-
-                p_cos1_for_a1 = Parallel(n_jobs=-1, prefer="process", verbose=1)(
+                p_cos1_for_a1 = Parallel(n_jobs=-1, prefer="processes", verbose=1)(
                     delayed(get_p_cos1_given_xeff_q_a1)(cos1, a1, self.xeff, self.q, self.mcmc_n) for cos1 in cos1s)
                 data['a1'] = np.append(data['a1'], np.array([a1 for _ in cos1s]))
                 data['cos1'] = np.append(data['cos1'], cos1s)
