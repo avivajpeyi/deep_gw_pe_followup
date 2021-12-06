@@ -1,32 +1,32 @@
-import functools
 import multiprocessing
 import os
 import shutil
 
 from cached_property import cached_property
 
-import bilby
+from .multiproc import joblib_get_p_a1, joblib_p_cos1_given_a1_calc
+
 import datetime
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from bilby.core.prior import (ConditionalPriorDict, Constraint, DeltaFunction,
-                              Interped, Prior, PriorDict, Uniform)
+from bilby.core.prior import (Constraint, DeltaFunction,
+                              Interped, Prior)
 from bilby.gw.prior import (CBCPriorDict,
                             convert_to_lal_binary_black_hole_parameters,
                             fill_from_fixed_priors, generate_mass_parameters)
-from joblib import Parallel, delayed
 from tqdm.auto import tqdm
 
 from .cacher import load_probabilities, store_probabilities
 from .conversions import calc_a2
 from .placeholder_prior import PlaceholderDelta
-from .prob_calculators import (get_p_a1_given_xeff_q,
-                               get_p_cos1_given_xeff_q_a1,
-                               get_p_cos2_given_xeff_q_a1_cos1)
+from .prob_calculators import (get_p_cos2_given_xeff_q_a1_cos1)
 from .plotting.hist2d import plot_heatmap
 
+import logging
 from bilby.core.utils import logger
+
+logger.setLevel(logging.INFO)
 
 num_cores = multiprocessing.cpu_count()
 
@@ -94,7 +94,7 @@ class RestrictedPrior(CBCPriorDict):
         else:
             logger.debug(f"Building RestricedPrior cache {c}")
             self._cache = c
-            os.makedirs(self._cache)
+            os.makedirs(self._cache, exist_ok=True)
         self._cache = os.path.abspath(self._cache)
 
     @property
@@ -114,10 +114,7 @@ class RestrictedPrior(CBCPriorDict):
             logger.debug(f"Creating {fname}")
             a1s = X['a1']
             da1 = a1s[1] - a1s[0]
-            p_a1 = Parallel(n_jobs=-1)(
-                delayed(get_p_a1_given_xeff_q)(a1, self.xeff, self.q, self.mcmc_n * 100)
-                for a1 in tqdm(a1s, desc="Building a1 cache"))
-
+            p_a1 = joblib_get_p_a1(a1s, self.xeff, self.q, self.mcmc_n * 100)
             p_a1 = p_a1 / np.sum(p_a1) / da1
             data = pd.DataFrame(dict(a1=a1s, p_a1=p_a1))
             store_probabilities(data, fname)
@@ -138,20 +135,14 @@ class RestrictedPrior(CBCPriorDict):
         else:
             logger.debug(f"Creating {fname}")
             a1s, cos1s = X['a1'], X['cos1']
-            data = dict(a1=np.array([]), cos1=np.array([]), p_cos1=np.array([]))
-            for a1 in tqdm(a1s, desc=f"Building p_cos1 cache ({num_cores} cores)"):
-                p_cos1_for_a1 = Parallel(n_jobs=-1, prefer="processes", verbose=1)(
-                    delayed(get_p_cos1_given_xeff_q_a1)(cos1, a1, self.xeff, self.q, self.mcmc_n) for cos1 in cos1s)
-                data['a1'] = np.append(data['a1'], np.array([a1 for _ in cos1s]))
-                data['cos1'] = np.append(data['cos1'], cos1s)
-                data['p_cos1'] = np.append(data['p_cos1'], p_cos1_for_a1)
+            data = joblib_p_cos1_given_a1_calc(cos1s=cos1s, a1s=a1s, xeff=self.xeff, q=self.q, mcmc_n=self.mcmc_n)
             data = pd.DataFrame(data)
             store_probabilities(data, fname)
         return data
 
     @classmethod
     def from_bbh_priordict(cls, dict):
-        dict = {k:v for k,v in dict.items()}
+        dict = {k: v for k, v in dict.items()}
         return cls(dictionary=dict)
 
     def get_cos1_prior(self, given_a1, ):
