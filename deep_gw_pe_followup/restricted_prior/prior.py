@@ -127,7 +127,8 @@ class RestrictedPrior(CBCPriorDict):
 
         return Interped(xx=a1, yy=p_a1, minimum=min_b, maximum=max_b, name="a_1", latex_label=r"$a_1$")
 
-    @functools.cached_property
+    # @functools.cached_property not present in 3.9 <
+    @functools.lru_cache
     def cached_cos1_data(self):
         fname = os.path.join(self.cache, "cos1_given_qxeffa1.h5")
         if os.path.isfile(fname):
