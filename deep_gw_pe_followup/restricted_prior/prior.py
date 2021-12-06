@@ -114,7 +114,7 @@ class RestrictedPrior(CBCPriorDict):
             logger.debug(f"Creating {fname}")
             a1s = X['a1']
             da1 = a1s[1] - a1s[0]
-            p_a1 = Parallel(n_jobs=-1, prefer="process")(
+            p_a1 = Parallel(n_jobs=-1, prefer="process", verbose=1)(
                 delayed(get_p_a1_given_xeff_q)(a1, self.xeff, self.q, self.mcmc_n * 100)
                 for a1 in tqdm(a1s, desc="Building a1 cache"))
 
