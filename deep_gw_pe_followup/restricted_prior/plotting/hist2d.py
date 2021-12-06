@@ -2,10 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-plt.style.use(
-    'https://gist.githubusercontent.com/avivajpeyi/4d9839b1ceb7d3651cbb469bc6b0d69b/raw/4ee4a870126653d542572372ff3eee4e89abcab0/publication.mplstyle'
-)
-
 CMAP = "hot"
 
 
