@@ -1,2 +1,6 @@
 bilby
+bilby_pipe
+parallel_bilby
 pandas
+joblib
+
