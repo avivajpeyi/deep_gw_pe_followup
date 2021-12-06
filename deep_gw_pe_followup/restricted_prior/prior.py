@@ -129,7 +129,6 @@ class RestrictedPrior(CBCPriorDict):
 
         return Interped(xx=a1, yy=p_a1, minimum=min_b, maximum=max_b, name="a_1", latex_label=r"$a_1$")
 
-    # @functools.cached_property not present in 3.9 <
     @cached_property
     def cached_cos1_data(self):
         fname = os.path.join(self.cache, "cos1_given_qxeffa1.h5")
@@ -140,7 +139,8 @@ class RestrictedPrior(CBCPriorDict):
             logger.debug(f"Creating {fname}")
             a1s, cos1s = X['a1'], X['cos1']
             data = dict(a1=np.array([]), cos1=np.array([]), p_cos1=np.array([]))
-            for a1 in tqdm(a1s, desc="Building p_cos1 cache"):
+            for a1 in tqdm(a1s, desc=f"Building p_cos1 cache ({num_cores} cores)"):
+
                 p_cos1_for_a1 = Parallel(n_jobs=num_cores)(
                     delayed(get_p_cos1_given_xeff_q_a1)(cos1, a1, self.xeff, self.q, self.mcmc_n) for cos1 in cos1s)
                 data['a1'] = np.append(data['a1'], np.array([a1 for _ in cos1s]))
