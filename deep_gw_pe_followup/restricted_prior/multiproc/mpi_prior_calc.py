@@ -1,18 +1,13 @@
 import numpy as np
 from mpi4py import MPI
-import time
-import tqdm as tqdm
-from ..prob_calculators import get_p_cos1_given_xeff_q_a1, get_p_a1_given_xeff_q
 
-comm = MPI.COMM_WORLD
-pe = comm.Get_rank()  # identity of this process (process element, sometimes called rank)
-nprocs = comm.Get_size()  # number of processes
-root = nprocs - 1  # special process responsible for administrative work
+from tqdm import tqdm
+from ..prob_calculators import get_p_cos1_given_xeff_q_a1, get_p_a1_given_xeff_q
 
 
 def mpi_p_cos1_given_a1_calc(cos1s, a1s, xeff, q, mcmc_n):
     data = dict(a1=np.array([]), cos1=np.array([]), p_cos1=np.array([]))
-    for a1 in tqdm(a1s, desc=f"Building p_cos1 cache ({nprocs} cores)"):
+    for a1 in tqdm(a1s, desc=f"Building p_cos1 cache"):
         p_cos1_for_a1 = mpi_calc_p_cos1(cos1s, a1, xeff, q, mcmc_n)
         data['a1'] = np.append(data['a1'], np.array([a1 for _ in cos1s]))
         data['cos1'] = np.append(data['cos1'], cos1s)
@@ -21,6 +16,11 @@ def mpi_p_cos1_given_a1_calc(cos1s, a1s, xeff, q, mcmc_n):
 
 
 def mpi_calc(func, x, *args):
+    comm = MPI.COMM_WORLD
+    pe = comm.Get_rank()  # identity of this process (process element, sometimes called rank)
+    nprocs = comm.Get_size()  # number of processes
+    root = nprocs - 1  # special process responsible for administrative work
+
     # total number of (work) elements
     n_global = len(x)
 
