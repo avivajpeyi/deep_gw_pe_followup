@@ -5,10 +5,8 @@ from ..prob_calculators import get_p_a1_given_xeff_q, get_p_cos1_given_xeff_q_a1
 
 
 def get_p_a1(a1s, xeff, q, mcmc_n):
-    p_a1 = np.array(
-        [get_p_a1_given_xeff_q(a1, xeff, q, mcmc_n * 100)
-         for a1 in tqdm(a1s, desc="Building a1 cache")]
-    )
+    print("Building p_a1 cache")
+    p_a1 = np.vectorize(get_p_a1_given_xeff_q)(a1s, xeff, q, mcmc_n * 100)
     return p_a1
 
 
