@@ -23,5 +23,5 @@ def p_cos1_given_a1_calc(cos1s, a1s, xeff, q, mcmc_n):
 
 
 def get_p_cos1(cos1s, a1, xeff, q, mcmc_n):
-    p_cos1_for_a1 = [get_p_cos1_given_xeff_q_a1(cos1, a1, xeff, q, mcmc_n) for cos1 in cos1s)]
+    p_cos1_for_a1 = [get_p_cos1_given_xeff_q_a1(cos1, a1, xeff, q, mcmc_n) for cos1 in cos1s]
     return np.array(p_cos1_for_a1)
