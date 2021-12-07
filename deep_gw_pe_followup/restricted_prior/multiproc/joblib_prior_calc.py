@@ -9,7 +9,7 @@ from ..prob_calculators import get_p_a1_given_xeff_q, get_p_cos1_given_xeff_q_a1
 
 
 def joblib_get_p_a1(a1s, xeff, q, mcmc_n):
-    p_a1 = Parallel(n_jobs=num_cores, verbose=1)(
+    p_a1 = Parallel(n_jobs=num_cores, prefer='processes',verbose=1)(
         delayed(get_p_a1_given_xeff_q)(a1, xeff, q, mcmc_n * 100)
         for a1 in tqdm(a1s, desc="Building a1 cache")
     )
