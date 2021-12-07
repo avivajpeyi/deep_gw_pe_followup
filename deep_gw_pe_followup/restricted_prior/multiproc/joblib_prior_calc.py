@@ -9,13 +9,11 @@ from ..prob_calculators import get_p_a1_given_xeff_q, get_p_cos1_given_xeff_q_a1
 
 
 def joblib_get_p_a1(a1s, xeff, q, mcmc_n):
-    p_a1 = Parallel(n_jobs=1, verbose=1)(
+    p_a1 = Parallel(n_jobs=num_cores, verbose=1)(
         delayed(get_p_a1_given_xeff_q)(a1, xeff, q, mcmc_n * 100)
         for a1 in tqdm(a1s, desc="Building a1 cache")
     )
     return p_a1
-
-
 
 
 def joblib_p_cos1_given_a1_calc(cos1s, a1s, xeff, q, mcmc_n):
@@ -29,6 +27,6 @@ def joblib_p_cos1_given_a1_calc(cos1s, a1s, xeff, q, mcmc_n):
 
 
 def joblib_get_p_cos1(cos1s, a1, xeff, q, mcmc_n):
-    p_cos1_for_a1 = Parallel(n_jobs=1, verbose=1)(
+    p_cos1_for_a1 = Parallel(n_jobs=num_cores, verbose=1)(
         delayed(get_p_cos1_given_xeff_q_a1)(cos1, a1, xeff, q, mcmc_n) for cos1 in cos1s)
     return p_cos1_for_a1

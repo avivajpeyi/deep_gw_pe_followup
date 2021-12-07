@@ -4,6 +4,10 @@ from mpi4py import MPI
 from tqdm import tqdm
 from ..prob_calculators import get_p_cos1_given_xeff_q_a1, get_p_a1_given_xeff_q
 
+comm = MPI.COMM_WORLD
+pe = comm.Get_rank()  # identity of this process (process element, sometimes called rank)
+nprocs = comm.Get_size()  # number of processes
+root = nprocs - 1  # special process responsible for administrative work
 
 def mpi_p_cos1_given_a1_calc(cos1s, a1s, xeff, q, mcmc_n):
     data = dict(a1=np.array([]), cos1=np.array([]), p_cos1=np.array([]))
@@ -16,10 +20,7 @@ def mpi_p_cos1_given_a1_calc(cos1s, a1s, xeff, q, mcmc_n):
 
 
 def mpi_calc(func, x, *args):
-    comm = MPI.COMM_WORLD
-    pe = comm.Get_rank()  # identity of this process (process element, sometimes called rank)
-    nprocs = comm.Get_size()  # number of processes
-    root = nprocs - 1  # special process responsible for administrative work
+    x = np.array(x)
 
     # total number of (work) elements
     n_global = len(x)
