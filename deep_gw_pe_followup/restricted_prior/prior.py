@@ -4,7 +4,7 @@ import shutil
 
 from cached_property import cached_property
 
-from .multiproc import joblib_get_p_a1, joblib_p_cos1_given_a1_calc
+from .multiproc import get_p_a1, get_p_cos1_given_xeff_q_a1
 
 import datetime
 import matplotlib.pyplot as plt
@@ -114,7 +114,7 @@ class RestrictedPrior(CBCPriorDict):
             logger.debug(f"Creating {fname}")
             a1s = X['a1']
             da1 = a1s[1] - a1s[0]
-            p_a1 = joblib_get_p_a1(a1s, self.xeff, self.q, self.mcmc_n * 100)
+            p_a1 = get_p_a1(a1s, self.xeff, self.q, self.mcmc_n * 100)
             p_a1 = p_a1 / np.sum(p_a1) / da1
             data = pd.DataFrame(dict(a1=a1s, p_a1=p_a1))
             store_probabilities(data, fname)
@@ -135,7 +135,7 @@ class RestrictedPrior(CBCPriorDict):
         else:
             logger.debug(f"Creating {fname}")
             a1s, cos1s = X['a1'], X['cos1']
-            data = joblib_p_cos1_given_a1_calc(cos1s=cos1s, a1s=a1s, xeff=self.xeff, q=self.q, mcmc_n=self.mcmc_n)
+            data = get_p_cos1_given_xeff_q_a1(cos1s=cos1s, a1s=a1s, xeff=self.xeff, q=self.q, mcmc_n=self.mcmc_n)
             data = pd.DataFrame(data)
             store_probabilities(data, fname)
         return data

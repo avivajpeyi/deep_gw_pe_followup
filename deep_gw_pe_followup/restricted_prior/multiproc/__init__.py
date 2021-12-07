@@ -1,2 +1,2 @@
 
-from .joblib_prior_calc import joblib_get_p_a1, joblib_p_cos1_given_a1_calc
+from .serial_prior_calc import get_p_a1, get_p_cos1_given_xeff_q_a1
