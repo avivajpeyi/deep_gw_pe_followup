@@ -163,7 +163,11 @@ class RestrictedPrior(CBCPriorDict):
         cos1 = data.cos1.values
         p_cos1 = data.p_cos1.values
 
-        min_b, max_b = find_boundary(cos1, p_cos1)
+        try:
+            min_b, max_b = find_boundary(cos1, p_cos1)
+        except Exception:
+            min_b = min(cos1)
+            max_b = max(cos1)
 
         return Interped(
             xx=cos1, yy=p_cos1,
@@ -179,7 +183,11 @@ class RestrictedPrior(CBCPriorDict):
         p_cos2 = np.array([get_p_cos2_given_xeff_q_a1_cos1(cos2, *args) for cos2 in cos2s])
         p_cos2 = p_cos2 / np.sum(p_cos2) / dc2
 
-        min_b, max_b = find_boundary(cos2s, p_cos2)
+        try:
+            min_b, max_b = find_boundary(cos2s, p_cos2)
+        except Exception:
+            min_b = min(cos2s)
+            max_b = max(cos2s)
 
         if min_b == max_b:
             return PlaceholderDelta(peak=min_b, name="cos_tilt_2", latex_label=r"$\cos \theta_2$")
