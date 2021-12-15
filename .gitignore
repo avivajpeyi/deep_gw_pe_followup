@@ -4,6 +4,8 @@ out*
 
 venv
 
+data
+
 # Temporary and binary files
 *cache*
 *~
