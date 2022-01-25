@@ -21,8 +21,8 @@
 import numpy as np
 from deep_gw_pe_followup.restricted_prior import RestrictedPrior, PlaceholderPrior
 
-from plotting import plot_probs
-from plotting import plot_heatmap
+from deep_gw_pe_followup.plotting import plot_probs
+from deep_gw_pe_followup.plotting import plot_heatmap
 import bilby
 from bilby.core.prior import Cosine, Sine, Uniform
 import os

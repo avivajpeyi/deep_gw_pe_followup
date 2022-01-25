@@ -308,7 +308,7 @@ class RestrictedPrior(CBCPriorDict):
             else:
                 axes[i].axvline(self[label].peak, c="C1")
                 axes[i].axvline(self[label].peak, c="C2", linestyle="--")
-            axes[i].set_xlabel(label)
+            axes[i].set_xlabel(label.replace("_"," "))
         plt.tight_layout()
         plt.savefig(fname)
 

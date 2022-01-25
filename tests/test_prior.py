@@ -40,7 +40,7 @@ class TestPrior(unittest.TestCase):
 
     def test_prior_prob_plot(self):
         p = prior.RestrictedPrior(filename="../studies/fast_injection/restricted.prior", clean=False)
-        N = 5000
+        N = 50
 
         t0 = time.time()
         samples = p.sample(N)
@@ -91,8 +91,11 @@ class TestPrior(unittest.TestCase):
         samples = samples[['a_1', 'cos_tilt_1', 'cos_tilt_2', 'a_2', 'mass_ratio', 'chi_eff']]
         range = [(0, 1), (-1, 1), (-1, 1), (0, 1), (0, 1), (-1, 1)]
         rejection_samples = rejection_samples[samples.columns.values]
-        fig = corner.corner(samples, labels=labels, color="tab:blue", **CORNER_KWARGS, range=range)
-        fig = corner.corner(rejection_samples, color="tab:orange", fig=fig, **CORNER_KWARGS, range=range)
+
+        kwarg = CORNER_KWARGS.copy()
+        fig = corner.corner(samples, labels=labels, **kwarg, range=range)
+        kwargs['color'] = 'tab:orange'
+        fig = corner.corner(rejection_samples,  fig=fig,**kwarg, range=range)
         fig.savefig(os.path.join(self.outdir, "samples.png"))
 
     def sample_uniform_dist(self, n, q, xeff, xeff_tol=0.001):
@@ -138,7 +141,7 @@ class TestPrior(unittest.TestCase):
         param = {'a_1': 0.11555590351574924, 'cos_tilt_1': -0.6656216267247913, 'phi_12': 0.0380814382, 'phi_jl': 0.65953863,
          'chirp_mass': 0.349375531, 'luminosity_distance': 0.927999428, 'dec': 0.470610876, 'ra': 0.0280144439,
          'theta_jn': 0.952277741, 'psi': 0.578920808, 'phase': 0.860491949}
-        r = prior.RestrictedPrior(filename="../studies/fast_injection/restricted.prior")
+        r = prior.RestrictedPrior(filename="../studies/fast_injection/restricted.prior", mcmc_n=5)
         r.debug_sample(param, f'{self.outdir}/param_test.png')
 
     @staticmethod
