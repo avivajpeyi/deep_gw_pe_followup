@@ -1,7 +1,7 @@
 out*
 .ipynb_checkpoints
 *.ipynb
-
+*.json
 venv
 
 data
@@ -24,6 +24,9 @@ data
 *.pyc
 *.coverage
 *.h5
+
+
+benchmark.png
 
 # Project files
 .ropeproject

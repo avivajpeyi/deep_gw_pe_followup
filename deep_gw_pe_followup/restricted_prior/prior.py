@@ -1,4 +1,3 @@
-import multiprocessing
 import os
 import shutil
 
@@ -19,11 +18,12 @@ from bilby.gw.prior import (CBCPriorDict,
                             fill_from_fixed_priors, generate_mass_parameters)
 from tqdm.auto import tqdm
 
-from .cacher import load_probabilities, store_probabilities
+from deep_gw_pe_followup.sample_cacher.cacher import load_probabilities, store_probabilities
 from .conversions import calc_a2
 from .placeholder_prior import PlaceholderDelta
 from .prob_calculators import (get_p_cos2_given_xeff_q_a1_cos1, get_p_a1_given_xeff_q, get_p_cos1_given_xeff_q_a1)
-from .plotting.hist2d import plot_heatmap
+
+from deep_gw_pe_followup.plotting.hist2d import plot_heatmap
 
 import logging
 from bilby.core.utils import logger

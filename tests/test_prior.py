@@ -11,20 +11,7 @@ from bilby.core.prior import DeltaFunction, PriorDict, Uniform
 from deep_gw_pe_followup.restricted_prior import prior
 from deep_gw_pe_followup.restricted_prior.conversions import calc_a2, calc_xeff
 
-CORNER_KWARGS = dict(
-    smooth=0.9,
-    label_kwargs=dict(fontsize=30),
-    title_kwargs=dict(fontsize=16),
-    truth_color="tab:orange",
-    quantiles=[0.16, 0.84],
-    levels=(1 - np.exp(-0.5), 1 - np.exp(-2), 1 - np.exp(-9.0 / 2.0)),
-    plot_density=False,
-    plot_datapoints=False,
-    fill_contours=True,
-    max_n_ticks=3,
-    verbose=False,
-    use_math_text=True,
-)
+from deep_gw_pe_followup.plotting.corner import CORNER_KWARGS
 
 CLEAN_AFTER = False
 

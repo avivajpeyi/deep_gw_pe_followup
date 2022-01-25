@@ -95,8 +95,7 @@ def seaborn_plot_hist(
 
     return ax
 
-
-def plot_comparison():
+def get_max_l_data():
     res = load_res()
     for l, r in res.items():
         max_param = r.get_max_log_likelihood_param()
@@ -111,7 +110,11 @@ def plot_comparison():
     ias_max_param = {
         k: v for k, v in res["ias_data"].get_max_log_likelihood_param().items() if k in keys
     }
+    return lvk_samp, lvk_max_param, ias_samp, ias_max_param
 
+
+def plot_comparison():
+    lvk_samp, lvk_max_param, ias_samp, ias_max_param = get_max_l_data()
     seaborn_plot_hist(
         samps_list=[ias_samp, lvk_samp],
         params_list=[ias_max_param, lvk_max_param],

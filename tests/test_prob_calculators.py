@@ -9,13 +9,13 @@ from bilby.core.prior import DeltaFunction, PriorDict, Uniform
 from joblib import Parallel, delayed
 from tqdm import tqdm
 
-from deep_gw_pe_followup.restricted_prior.cacher import (load_probabilities,
-                                                         store_probabilities)
+from sample_cacher.cacher import (load_probabilities,
+                                  store_probabilities)
 from deep_gw_pe_followup.restricted_prior.conversions import calc_xeff
-from deep_gw_pe_followup.restricted_prior.plotting import plot_ci, plot_probs
+from plotting import plot_ci, plot_probs
 from deep_gw_pe_followup.restricted_prior.prior import RestrictedPrior
 from deep_gw_pe_followup.restricted_prior.prob_calculators import (
-    get_p_a1_given_xeff_q, get_p_cos1_given_xeff_q_a1,
+    get_p_cos1_given_xeff_q_a1,
     get_p_cos2_given_xeff_q_a1_cos1)
 
 num_cores = multiprocessing.cpu_count()

@@ -19,11 +19,10 @@
 
 # +
 import numpy as np
-from deep_gw_pe_followup.restricted_prior import RestrictedPrior, PlaceholderPrior, PlaceholderDelta
-from deep_gw_pe_followup.restricted_prior.conversions import calc_a2
+from deep_gw_pe_followup.restricted_prior import RestrictedPrior, PlaceholderPrior
 
-from deep_gw_pe_followup.restricted_prior.plotting import plot_ci, plot_probs
-from deep_gw_pe_followup.restricted_prior.plotting.hist2d import plot_heatmap
+from plotting import plot_probs
+from plotting import plot_heatmap
 import bilby
 from bilby.core.prior import Cosine, Sine, Uniform
 import os

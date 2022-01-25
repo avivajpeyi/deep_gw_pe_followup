@@ -8,9 +8,6 @@ CMAP = "hot"
 def plot_probs(x, y, p, xlabel, ylabel, plabel=None, fname=None):
     plt.close('all')
 
-
-
-
     fig, axes = plt.subplots(2, 1, figsize=(4, 8))
     ax = axes[0]
 
@@ -34,7 +31,7 @@ def plot_probs(x, y, p, xlabel, ylabel, plabel=None, fname=None):
     if plabel:
         ax.colorbar(cmap, label=plabel)
 
-    plot_heatmap(axes[1])
+    plot_heatmap(x, y, z, axes[1])
 
     for ax in axes:
         ax.set_ylabel(ylabel)
@@ -50,12 +47,14 @@ def plot_probs(x, y, p, xlabel, ylabel, plabel=None, fname=None):
 def plot_heatmap(x, y, p, ax):
     if isinstance(p, pd.Series):
         z = p.values
+        x = x.values
+        y = y.values
     else:
         z = p.copy()
     z[z == -np.inf] = np.nan
 
-    x = np.unique(x.values)
-    y = np.unique(y.values)
+    x = np.unique(x)
+    y = np.unique(y)
     X, Y = np.meshgrid(x, y, indexing='ij')
 
     Z = z.reshape(len(x), len(y))
