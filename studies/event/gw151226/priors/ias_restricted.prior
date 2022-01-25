@@ -8,9 +8,6 @@ a_2 = Constraint(name="a_2", minimum=0, maximum=1)
 
 
 chirp_mass = Uniform(name='chirp_mass', minimum=6.0, maximum=15.0)
-# DID I RUN WITH MASS CONSTRAINTS?
-# mass_1 = Constraint(minimum=3.022, maximum=54.398, name='mass_1', latex_label='$m_1$', unit=None)
-# mass_2 = Constraint(minimum=3.022, maximum=54.398, name='mass_2', latex_label='$m_2$', unit=None)
 phi_12 = Uniform(name='phi_12', minimum=0, maximum=2 * np.pi, boundary='periodic')
 phi_jl = Uniform(name='phi_jl', minimum=0, maximum=2 * np.pi, boundary='periodic')
 luminosity_distance = PowerLaw(alpha=2, name='luminosity_distance', minimum=20, maximum=1500, unit='Mpc', latex_label='$d_L$')
