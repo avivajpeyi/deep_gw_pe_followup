@@ -7,7 +7,7 @@ venv
 data
 
 # Temporary and binary files
-*cache*
+
 *~
 *.py[cod]
 *.so
@@ -18,7 +18,8 @@ data
 *.pot
 */__pycache__/*
 .cache/*
-.*_cache/*
+cache_*
+*.pkl
 .*.swp
 */.ipynb_checkpoints/*
 *.pyc
