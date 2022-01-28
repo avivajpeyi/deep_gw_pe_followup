@@ -55,8 +55,10 @@ def plot_samples(prior: RestrictedPrior, name):
     without_fname = f"{name}_samples_without_constraints.csv"
     with_fname = f"{name}_samples_with_constraints.csv"
 
+    print(f"{name} prior w/ constraints: {list(prior.keys())}")
     s_with_constraint = load_samples(prior, with_fname)
     no_constraint_prior = remove_mass_constraints(prior)
+    print(f"{name} prior w/o constraints: {list(no_constraint_prior.keys())}")
     s_no_constraint = load_samples(no_constraint_prior, without_fname)
 
     frac = calculate_throw_fraction(s_no_constraint, prior)
@@ -73,7 +75,7 @@ def plot_samples(prior: RestrictedPrior, name):
         ranges=[(16, 60), (2, 8), (0.5, 1), (0, 1), (5.5, 15.5)],
         quants=False,
     )
-
+    plt.close('all')
     plt.hist(s_with_constraint.chirp_mass, histtype='step', density=True, label="m1-m2 constrained", color="tab:blue")
     plt.hist(s_no_constraint.chirp_mass, histtype='step', density=True, label="no m1-m2 constraint", color="tab:orange")
     plt.ylabel("Density")
@@ -90,6 +92,6 @@ if __name__ == '__main__':
     plot_samples(ias_p, "IAS")
 
     print("Getting prior")
-    ias_p = get_prior(LVK)
+    lvk_p = get_prior(LVK)
     print("plotting")
-    plot_samples(ias_p, "LVK")
+    plot_samples(lvk_p, "LVK")
