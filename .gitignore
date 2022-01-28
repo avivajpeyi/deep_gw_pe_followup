@@ -25,7 +25,7 @@ cache_*
 *.pyc
 *.coverage
 *.h5
-
+*.csv
 
 benchmark.png
 
