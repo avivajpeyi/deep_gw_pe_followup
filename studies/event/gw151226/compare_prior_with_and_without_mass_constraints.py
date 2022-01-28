@@ -72,7 +72,6 @@ def plot_samples(prior: RestrictedPrior, name):
         truths=None,
         ranges=[(16, 60), (2, 8), (0.5, 1), (0, 1), (5.5, 15.5)],
         quants=False,
-        override_kwargs={}
     )
 
     plt.hist(s_with_constraint.chirp_mass, histtype='step', density=True, label="m1-m2 constrained", color="tab:blue")
