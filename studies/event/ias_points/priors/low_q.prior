@@ -1,6 +1,5 @@
-# ias_data {'q': 0.10537432884262372, 'xeff': 0.5899239152977372}
-mass_ratio=0.10537432884262372
-chi_eff=0.5899239152977372
+mass_ratio=0.15
+chi_eff=0.5
 a_1 = deep_gw_pe_followup.restricted_prior.PlaceholderPrior(name='a_1')
 cos_tilt_1 = deep_gw_pe_followup.restricted_prior.PlaceholderPrior(name='cos_tilt_1')
 cos_tilt_2 = deep_gw_pe_followup.restricted_prior.PlaceholderPrior(name='cos_tilt_2')

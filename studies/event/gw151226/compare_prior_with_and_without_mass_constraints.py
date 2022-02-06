@@ -43,12 +43,17 @@ def load_samples(prior: RestrictedPrior, fname):
     return df
 
 
+def apply_constraints_manually(s):
+    s = s[s['mass_1']>=3.022]
+    s = s[s['mass_2'] >= 3.022]
+    s = s[s['mass_1'] <= 54.398]
+    s = s[s['mass_2'] <= 54.398]
+    return s
+
 def calculate_throw_fraction(samples_without_constraint, prior_with_constraints: RestrictedPrior):
     samples_without_constraint = samples_without_constraint[list(prior_with_constraints.keys())]
     samples_without_constraint = samples_without_constraint.drop(['mass_ratio', 'chi_eff'], axis=1)
-    s_dict = samples_without_constraint.to_dict('records')
-    ln_prob = np.array([prior_with_constraints.ln_prob(s) for s in s_dict])
-    return np.sum(np.isinf(ln_prob)) / len(ln_prob)
+    return len(apply_constraints_manually(samples_without_constraint))/len(samples_without_constraint)
 
 
 def plot_samples(prior: RestrictedPrior, name):
