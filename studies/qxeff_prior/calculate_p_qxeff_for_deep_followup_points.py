@@ -4,15 +4,21 @@ from bilby.gw.prior import PriorDict, Uniform
 from deep_gw_pe_followup.sample_cacher.kde2d import get_kde
 from deep_gw_pe_followup.sample_cacher import cacher
 from effective_spins.priors_conditional_on_xeff import p_param_and_xeff
+import numpy as np
 
 SAMPLES_FILE = "qxeff_samples.h5"
 ASTRO_SAMPLES_FILE = "astro_qxeff_samples.h5"
 
 
+NUMERICAL_QXEFF_NORM_FACTOR = 5280.323631278067
+
+
 def get_max_l_data():
     return dict(
         IAS={'q': 0.10537432884262372, 'xeff': 0.5899239152977372},
-        LVK={'q': 0.29103432408863716, 'xeff': 0.2959265313232419}
+        LVK={'q': 0.29103432408863716, 'xeff': 0.2959265313232419},
+        LOW_Q = {'q': 0.15, 'xeff': 0.5},
+        HIGH_Q = {'q': 0.68, 'xeff': 0.15}
     )
 
 
@@ -41,7 +47,7 @@ def calculate_p_with_kde(kde, params):
     print("Using KDE")
     for label, param in params.items():
         prob = kde([param['q'], param['xeff']])
-        print(f"pi_qxeff({label} pt, {param})--> {prob}")
+        print(f"ln pi_qxeff({label} pt, {param})--> {np.log(prob/NUMERICAL_QXEFF_NORM_FACTOR)}")
 
 
 def calculate_p_with_numerical(params):
@@ -57,7 +63,7 @@ def calculate_p_with_numerical(params):
             param=param['q'], xeff=param['xeff'],
             init_a1a2qcos2_prior=a1a2qcos2_prior, param_key='q'
         )
-        print(f"pi_qxeff({label} pt, {param})--> {prob}")
+        print(f"ln pi_qxeff({label} pt, {param})--> {np.log(prob/NUMERICAL_QXEFF_NORM_FACTOR)}")
 
 
 def main():

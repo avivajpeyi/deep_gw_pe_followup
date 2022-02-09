@@ -32,6 +32,7 @@ def plot_probs(x, y, p, xlabel, ylabel, plabel=None, fname=None):
         z[z == -np.inf] = np.nan
 
         ax.tricontour(x, y, z, 15, linewidths=0.5, colors='k')
+
         cmap = ax.tricontourf(
             x, y, z, 15,
             vmin=np.nanmin(z), vmax=np.nanmax(z),
@@ -42,13 +43,14 @@ def plot_probs(x, y, p, xlabel, ylabel, plabel=None, fname=None):
         cmap = ax.scatter(x, y, c=p, cmap=CMAP)
 
     if plabel:
-        ax.colorbar(cmap, label=plabel)
+        fig.colorbar(cmap, label=plabel, ax=ax)
 
-    plot_heatmap(x, y, z, axes[1])
+    plot_heatmap(x, y, z, axes[1], plabel=plabel)
 
     for ax in axes:
         ax.set_ylabel(ylabel)
         ax.set_xlabel(xlabel)
+        ax.set_aspect(1. / ax.get_data_ratio())
 
     if fname:
         fig.tight_layout()
@@ -57,7 +59,7 @@ def plot_probs(x, y, p, xlabel, ylabel, plabel=None, fname=None):
         return fig, axes
 
 
-def plot_heatmap(x, y, p, ax):
+def plot_heatmap(x, y, p, ax, plabel=None):
     if isinstance(p, pd.Series):
         z = p.values
         x = x.values
@@ -72,7 +74,11 @@ def plot_heatmap(x, y, p, ax):
 
     Z = z.reshape(len(x), len(y))
 
-    ax.pcolor(X, Y, Z, cmap=CMAP, vmin=np.nanmin(z), vmax=np.nanmax(z))
+    cmap = ax.pcolor(X, Y, Z, cmap=CMAP, vmin=np.nanmin(z), vmax=np.nanmax(z))
+    
+    if plabel:
+        fig = ax.get_figure()
+        fig.colorbar(cmap, ax=ax, label=plabel)
 
 
 def get_alpha_colormap(hex_color, level=SIGMA_LEVELS):

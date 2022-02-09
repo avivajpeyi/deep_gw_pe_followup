@@ -63,6 +63,7 @@ def build_kde_grid(df, fname):
     kde = get_kde(df.q, df.xeff)
     x, y, z = evaluate_kde_on_grid(kde, df.q, df.xeff, num_gridpoints=100j)
     kde_df = pd.DataFrame(dict(q=x, xeff=y, p=z))
+
     cacher.store_probabilities(kde_df, fname)
     plot_probs(kde_df.q.values, kde_df.xeff.values, p=kde_df.p, xlabel=r"$q$", ylabel=r"$\chi_{\rm eff}$",
                fname=fname.replace(".h5", ".png"))
@@ -79,22 +80,26 @@ def main():
         kde_df = cacher.load_probabilities(KDE_GRID_FILE)
     else:
         kde_df = build_kde_grid(samp_df)
+    norm_factor = np.sum(kde_df.p)
+    print(f"norm factor: {norm_factor}")
 
-    if os.path.isfile(ASTRO_SAMPLES_FILE):
-        samp_df = cacher.load_probabilities(ASTRO_SAMPLES_FILE)
-    else:
-        samp_df = draw_samples(get_dynamical_astro_prior(), ASTRO_SAMPLES_FILE, int(1e7))
+    # if os.path.isfile(ASTRO_SAMPLES_FILE):
+    #     samp_df = cacher.load_probabilities(ASTRO_SAMPLES_FILE)
+    # else:
+    #     samp_df = draw_samples(get_dynamical_astro_prior(), ASTRO_SAMPLES_FILE, int(1e7))
 
-    if os.path.isfile(ASTRO_KDE_GRID_FILE):
-        kde_df = cacher.load_probabilities(ASTRO_KDE_GRID_FILE)
-    else:
-        kde_df = build_kde_grid(samp_df, ASTRO_KDE_GRID_FILE)
+    # if os.path.isfile(ASTRO_KDE_GRID_FILE):
+    #     kde_df = cacher.load_probabilities(ASTRO_KDE_GRID_FILE)
+    # else:
+    #     kde_df = build_kde_grid(samp_df, ASTRO_KDE_GRID_FILE)
 
     if os.path.isfile(NUMERICAL_FILE):
         numerical_df = cacher.load_probabilities(NUMERICAL_FILE)
     else:
         compute_and_store_prior_p_and_xeff.generate_dataset('q')
         numerical_df = cacher.load_probabilities(NUMERICAL_FILE)
+    norm_factor = np.sum(numerical_df.p)
+    print(f"norm factor: {norm_factor}")
 
 
 if __name__ == '__main__':

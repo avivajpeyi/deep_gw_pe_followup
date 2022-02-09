@@ -6,7 +6,6 @@ import multiprocessing
 
 from cached_property import cached_property
 
-
 import datetime
 import matplotlib.pyplot as plt
 import numpy as np
@@ -62,11 +61,12 @@ def find_boundary(x, y):
 
 class RestrictedPrior(CBCPriorDict):
     def __init__(self, dictionary=None, filename=None, clean=False, build_cache=True, mcmc_n=MCMC_N, cache=None):
+        """cache -- a dir with the cached prob files"""
         super().__init__(dictionary=dictionary, filename=filename, conversion_function=None)
         self.q = (self['q'] if 'q' in self else self['mass_ratio']).peak
         self.xeff = (self['xeff'] if 'xeff' in self else self['chi_eff']).peak
         self.mcmc_n = mcmc_n
-
+        self.filename = filename
         if clean:
             shutil.rmtree(self.cache)
         self.cache = cache
@@ -80,7 +80,9 @@ class RestrictedPrior(CBCPriorDict):
             self['cos_tilt_1'] = self.get_cos1_prior(given_a1=0.5)
             self['cos_tilt_2'] = self.get_cos2_prior(given_a1=0.5, given_cos1=0.5)
 
-        self.assert_no_constraint_priors()  # we have forced the normalisation_constraint_factor = 1
+        # we have forced the normalize_constraint_factor = 1
+        # if we need to deal with constraints in post-processing
+        self.constraint_prior_check()
 
     @property
     def cache(self):
@@ -89,7 +91,13 @@ class RestrictedPrior(CBCPriorDict):
     @cache.setter
     def cache(self, c):
         if c is None:
-            c = f"cache_q{self.q}-xeff{self.xeff}".replace(".", "_")
+            prior_dirname = ""
+            # if self.filename and os.path.isfile(self.filename):
+            #     prior_dirname = os.path.dirname(self.filename)
+            c = os.path.join(
+                prior_dirname,
+                f"cache_q{self.q}-xeff{self.xeff}".replace(".", "_")
+            )
         if os.path.isdir(c):
             logger.debug(f"Loading RestricedPrior from cache {c}")
             self._cache = c
@@ -103,9 +111,16 @@ class RestrictedPrior(CBCPriorDict):
     def restricted_params(self):
         return ['a_1', 'cos_tilt_1', 'cos_tilt_2', 'a_2']
 
-    def assert_no_constraint_priors(self):
-        for p in self:
-            assert not isinstance(p, Constraint)
+    def constraint_prior_check(self):
+        constraint_present = False
+        for p,v in self.items():
+            if isinstance(v, Constraint):
+                constraint_present = True
+        if constraint_present:
+            logger.warning(
+                "bilby prior contraints are present but `normalize_constraint_factor` is set to 1."
+                "The user will need to compute the constraint factor in post-processing."
+            )
 
     def get_a1_prior(self):
         fname = os.path.join(self.cache, "a1_given_qxeff.h5")
@@ -308,7 +323,7 @@ class RestrictedPrior(CBCPriorDict):
             else:
                 axes[i].axvline(self[label].peak, c="C1")
                 axes[i].axvline(self[label].peak, c="C2", linestyle="--")
-            axes[i].set_xlabel(label.replace("_"," "))
+            axes[i].set_xlabel(label.replace("_", " "))
         plt.tight_layout()
         plt.savefig(fname)
 

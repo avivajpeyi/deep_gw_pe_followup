@@ -1,0 +1,17 @@
+mass_ratio=0.15
+chi_eff=0.5
+a_1 = deep_gw_pe_followup.restricted_prior.PlaceholderPrior(name='a_1')
+cos_tilt_1 = deep_gw_pe_followup.restricted_prior.PlaceholderPrior(name='cos_tilt_1')
+cos_tilt_2 = deep_gw_pe_followup.restricted_prior.PlaceholderPrior(name='cos_tilt_2')
+a_2 = Constraint(name="a_2", minimum=0, maximum=1)
+chirp_mass = Uniform(name='chirp_mass', minimum=6.0, maximum=15.0)
+phi_12 = Uniform(name='phi_12', minimum=0, maximum=2 * np.pi, boundary='periodic')
+phi_jl = Uniform(name='phi_jl', minimum=0, maximum=2 * np.pi, boundary='periodic')
+luminosity_distance = PowerLaw(alpha=2, name='luminosity_distance', minimum=20, maximum=1500, unit='Mpc', latex_label='$d_L$')
+dec = Cosine(name='dec', latex_label='$\\mathrm{DEC}$', unit=None, minimum=-1.5707963267948966, maximum=1.5707963267948966)
+ra =  Uniform(name='ra', minimum=0, maximum=2 * np.pi, boundary='periodic')
+cos_theta_jn = Uniform(minimum=-1, maximum=1, name='cos_theta_jn', latex_label='$\\cos\\theta_{JN}$', unit=None)
+psi =  Uniform(name='psi', minimum=0, maximum=np.pi, boundary='periodic')
+phase =  Uniform(name='phase', minimum=0, maximum=2 * np.pi, boundary='periodic')
+mass_1 = Constraint(minimum=3.022, maximum=54.398, name='mass_1', latex_label='$m_1$', unit=None)
+mass_2 = Constraint(minimum=3.022, maximum=54.398, name='mass_2', latex_label='$m_2$', unit=None)

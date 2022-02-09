@@ -13,6 +13,10 @@ from bilby.gw.conversion import generate_all_bbh_parameters
 from deep_gw_pe_followup.plotting.hist2d import seaborn_plot_hist
 
 
+def get_high_low_points():
+    high = dict(mass_ratio=0.68, chi_eff=0.15)
+    low = dict(mass_ratio=0.15, chi_eff=0.5)
+    return high, low
 
 def get_max_l_data():
     res = load_res()
@@ -34,8 +38,31 @@ def get_max_l_data():
     return lvk_samp, lvk_max_param, ias_samp, ias_max_param
 
 
+def get_bogus_samples():
+    return pd.DataFrame(dict(
+        mass_ratio = np.random.normal(loc=-100, size=100000),
+        chi_eff=np.random.normal(loc=-100, size=100000),
+    ))
+
 def plot_comparison():
     lvk_samp, lvk_max_param, ias_samp, ias_max_param = get_max_l_data()
+
+    high, low = get_high_low_points()
+    lvk_samp, lvk_max_param, ias_samp, ias_max_param = get_max_l_data()
+    seaborn_plot_hist(
+        samps_list=[ias_samp, get_bogus_samples() ],
+        params_list=[high, low],
+        cmaps_list=["Greens", "Greens"],
+        labels=["High-q", "Low-q"],
+        markers=["X", "s"],
+        zorders=[-100, -10],
+        linestyles=["solid", "dashed"]
+    )
+     plt.savefig("mode_pts_for_IAS.png")
+
+
+
+
     seaborn_plot_hist(
         samps_list=[ias_samp, lvk_samp],
         params_list=[ias_max_param, lvk_max_param],
@@ -46,6 +73,7 @@ def plot_comparison():
         linestyles=["solid", "dashed"]
     )
     plt.savefig("maxL_pts_for_IAS_and_LVK.png")
+
 
     lvk_prior = CBCPriorDict(filename="priors/GW151226.prior")
     s = pd.DataFrame(lvk_prior.sample(100000))
