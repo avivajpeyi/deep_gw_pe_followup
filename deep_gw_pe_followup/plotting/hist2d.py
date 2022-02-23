@@ -74,7 +74,7 @@ def plot_heatmap(x, y, p, ax, plabel=None):
 
     Z = z.reshape(len(x), len(y))
 
-    cmap = ax.pcolor(X, Y, Z, cmap=CMAP, vmin=np.nanmin(z), vmax=np.nanmax(z))
+    cmap = ax.pcolor(X, Y, Z, cmap=CMAP, vmin=np.nanmin(z), vmax=np.nanmax(z), zorder=-100)
     
     if plabel:
         fig = ax.get_figure()
@@ -141,13 +141,14 @@ def seaborn_plot_hist(
                 color=c,
                 marker=marker,
                 label=label,
+                s = 60
             )
 
     ax.set(xlabel=r"$q$", ylabel=r"$\chi_{\rm eff}$")
     ax.set_xlim(0, 1)
-    ax.set_ylim(0, 0.7)
+    ax.set_ylim(0, 0.6)
     ax.set_xticks([-0, 0.5, 1])
-    ax.set_yticks([0.1, 0.3, 0.6])
+    ax.set_yticks([0.1, 0.3,  0.5])
 
     ax.legend(frameon=False, markerscale=2, fontsize=15)
     plt.minorticks_off()

@@ -44,11 +44,32 @@ def get_bogus_samples():
         chi_eff=np.random.normal(loc=-100, size=100000),
     ))
 
+
+
 def plot_comparison():
     lvk_samp, lvk_max_param, ias_samp, ias_max_param = get_max_l_data()
 
     high, low = get_high_low_points()
     lvk_samp, lvk_max_param, ias_samp, ias_max_param = get_max_l_data()
+    bogus_samples = get_bogus_samples()
+    bogus_sample = dict(mass_ratio=-100, chi_eff=50)
+
+
+    seaborn_plot_hist(
+        samps_list=[lvk_samp, bogus_samples, get_bogus_samples()],
+        params_list=[bogus_sample, high, low],
+        cmaps_list=["Oranges", "Purples", "Greens"],
+        labels=["LVK", "High-$q$", "Low-$q$"],
+        markers=["_", "x", "*"],
+        zorders=[-100, -10, -10],
+        linestyles=["solid", "dashed", "dashed"]
+    )
+    plt.savefig("high_low_on_lvk.png")
+
+    print("DONE")
+
+
+
     seaborn_plot_hist(
         samps_list=[ias_samp, get_bogus_samples() ],
         params_list=[high, low],
@@ -58,10 +79,7 @@ def plot_comparison():
         zorders=[-100, -10],
         linestyles=["solid", "dashed"]
     )
-     plt.savefig("mode_pts_for_IAS.png")
-
-
-
+    plt.savefig("mode_pts_for_IAS.png")
 
     seaborn_plot_hist(
         samps_list=[ias_samp, lvk_samp],
@@ -83,10 +101,10 @@ def plot_comparison():
     prior_samples = s[['mass_ratio', 'chi_eff']]
     seaborn_plot_hist(
         samps_list=[prior_samples, ias_samp, lvk_samp],
-        params_list=[dict(mass_ratio=-100, chi_eff=50), ias_max_param, lvk_max_param],
+        params_list=[bogus_sample, ias_max_param, lvk_max_param],
         cmaps_list=["Blues", "Greens", "Oranges"],
         labels=["Prior", "IAS", "LVK"],
-        markers=["_", "+", "*"],
+        markers=["_", "x", "*"],
         zorders=[-200, -100, -10],
         linestyles=["solid", "solid", "dashed"]
     )
