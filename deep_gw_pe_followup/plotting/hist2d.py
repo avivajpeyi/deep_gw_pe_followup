@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from deep_gw_pe_followup import get_mpl_style
+from matplotlib.colors import (to_rgba, ListedColormap)
 
 from matplotlib.colors import to_hex, to_rgba
 
@@ -59,7 +60,7 @@ def plot_probs(x, y, p, xlabel, ylabel, plabel=None, fname=None):
         return fig, axes
 
 
-def plot_heatmap(x, y, p, ax, plabel=None):
+def plot_heatmap(x, y, p, ax, plabel=None, cmap=CMAP):
     if isinstance(p, pd.Series):
         z = p.values
         x = x.values
@@ -74,7 +75,7 @@ def plot_heatmap(x, y, p, ax, plabel=None):
 
     Z = z.reshape(len(x), len(y))
 
-    cmap = ax.pcolor(X, Y, Z, cmap=CMAP, vmin=np.nanmin(z), vmax=np.nanmax(z), zorder=-100)
+    cmap = ax.pcolor(X, Y, Z, cmap=cmap, vmin=np.nanmin(z), vmax=np.nanmax(z), zorder=-100)
     
     if plabel:
         fig = ax.get_figure()
@@ -155,3 +156,12 @@ def seaborn_plot_hist(
     plt.tight_layout()
 
     return ax
+
+
+def make_colormap_to_white(color="tab:orange"):
+    color_rgb = np.array(to_rgba(color))
+    lower = np.ones((int(256 / 4), 4))
+    for i in range(3):
+        lower[:, i] = np.linspace(1, color_rgb[i], lower.shape[0])
+    cmap = np.vstack(lower)
+    return ListedColormap(cmap, name='myColorMap', N=cmap.shape[0])

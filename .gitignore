@@ -4,6 +4,8 @@ out*
 *.json
 venv
 
+*.gzip
+
 data
 
 # Temporary and binary files

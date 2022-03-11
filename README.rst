@@ -3,7 +3,9 @@ deep GW PE Followup
 
 Introduction
 ------------
-Helps arbitrate which PE results are more probable
+Software to determine which q-xeff mode is more probable
+
+TODO: upload results to zenodo
 
 Prerequisites
 -------------
