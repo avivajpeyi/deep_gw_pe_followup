@@ -52,6 +52,10 @@ def find_boundary_idx(x):
     return non_z[0], non_z[-1]
 
 
+def norm_values(y, x):
+    return y / np.trapz(y, x)
+
+
 def find_boundary(x, y):
     b1, b2 = find_boundary_idx(y)
     vals = [x[b1], x[b2]]
@@ -83,6 +87,7 @@ class RestrictedPrior(CBCPriorDict):
         # we have forced the normalize_constraint_factor = 1
         # if we need to deal with constraints in post-processing
         self.constraint_prior_check()
+        self.normalisation_check()
 
     @property
     def cache(self):
@@ -113,7 +118,7 @@ class RestrictedPrior(CBCPriorDict):
 
     def constraint_prior_check(self):
         constraint_present = False
-        for p,v in self.items():
+        for p, v in self.items():
             if isinstance(v, Constraint):
                 constraint_present = True
         if constraint_present:
@@ -140,7 +145,7 @@ class RestrictedPrior(CBCPriorDict):
             store_probabilities(data, fname)
 
         a1 = data.a1.values
-        p_a1 = data.p_a1.values
+        p_a1 = norm_values(data.p_a1.values, a1)
 
         min_b, max_b = find_boundary(a1, p_a1)
 
@@ -176,7 +181,7 @@ class RestrictedPrior(CBCPriorDict):
         closest_a1 = find_nearest(data.a1, given_a1)
         data = data[data.a1 == closest_a1]
         cos1 = data.cos1.values
-        p_cos1 = data.p_cos1.values
+        p_cos1 = norm_values(data.p_cos1.values, cos1)
 
         try:
             min_b, max_b = find_boundary(cos1, p_cos1)
@@ -197,6 +202,7 @@ class RestrictedPrior(CBCPriorDict):
         args = (given_a1, self.xeff, self.q, given_cos1)
         p_cos2 = np.array([get_p_cos2_given_xeff_q_a1_cos1(cos2, *args) for cos2 in cos2s])
         p_cos2 = p_cos2 / np.sum(p_cos2) / dc2
+        p_cos2 = norm_values(p_cos2, cos2s)
 
         try:
             min_b, max_b = find_boundary(cos2s, p_cos2)
@@ -336,10 +342,9 @@ class RestrictedPrior(CBCPriorDict):
             The number of evaluations to estimate the evaluation time from
 
         """
-
         t1 = datetime.datetime.now()
         for _ in range(n_evaluations):
-            theta = self.sample()
+            self.sample()
         total_time = (datetime.datetime.now() - t1).total_seconds()
         self._eval_time = total_time / n_evaluations
 
@@ -360,3 +365,21 @@ class RestrictedPrior(CBCPriorDict):
         plot_heatmap(x=data['a1'], y=data['cos1'], p=data['p_cos1'], ax=axes[1])
         plt.tight_layout()
         plt.savefig(f"{self.cache}/plot.png")
+
+    def normalisation_check(self, verbose=False):
+        a = np.linspace(0, 1, 1000)
+        cos = np.linspace(-1, 1, 1000)
+        p_a1 = self['a_1']
+        a1_val = p_a1.sample()
+        p_cos1 = self.get_cos1_prior(a1_val)
+        cos1_val = p_cos1.sample()
+        p_cos2 = self.get_cos2_prior(a1_val, cos1_val)
+        norms = {
+            "int p_a1 da1": np.trapz(p_a1.prob(a), a),
+            "int p_cos1 dcos1": np.trapz(p_cos1.prob(cos), cos),
+            "int p_cos2 dcos2": np.trapz(p_cos2.prob(cos), cos),
+        }
+        for k, v in norms.items():
+            np.testing.assert_almost_equal(v, 1.0, decimal=2, err_msg=f"{k} = {v} (not 1)")
+            if verbose:
+                print(f"{k} = {v}")

@@ -25,7 +25,7 @@ def calc_chi1z(xeff, xdiff, q):
     if chi1z ** 2 <= 1:
         return chi1z
     else:
-        return np.nan
+        return chi1z  # np.nan
 
 
 @np.vectorize
@@ -34,7 +34,7 @@ def calc_chi2z(xeff, xdiff, q):
     if chi2z ** 2 <= 1:
         return chi2z
     else:
-        return np.nan
+        return chi2z  # np.nan
 
 
 @np.vectorize
@@ -72,6 +72,7 @@ def spin_sphereical_to_cartesian(a, theta, phi):
         a * np.cos(theta)  # z
     )
 
+
 @np.vectorize
 def sqr_sum(x, y, z):
     return x ** 2 + y ** 2 + z ** 2
@@ -96,4 +97,47 @@ def convert_xeff_xdiff_to_spins(parameters):
 
     p['cos1'] = p['chi1z'] / p['chi1mag']
     p['cos2'] = p['chi2z'] / p['chi2mag']
+    return p
+
+
+def get_s1z(xeff, q, s2z):
+    return (1 + q) * xeff - q * s2z
+
+
+def get_s2z(xeff, q, s1z):
+    return ((1 + q) * xeff - s1z) / q
+
+
+def get_s1z_from_limits(s1z_min, s1z_max, newxdiff):
+    return s1z_min + newxdiff * (s1z_max - s1z_min)
+
+
+def s1z_lim(xeff, q):
+    s1z_min = np.maximum(get_s1z(xeff, q, s2z=1), -1)
+    s1z_max = np.minimum(get_s1z(xeff, q, s2z=-1), 1)
+    return s1z_min, s1z_max
+
+
+
+def transform_to_spins(parameters):
+    xeff, q, newxdiff = parameters['xeff'], parameters['q'], parameters['newxdiff']
+    p = parameters.copy()
+    s1z_min, s1z_max = s1z_lim(xeff, q)
+    p['s1z'] = get_s1z_from_limits(s1z_min, s1z_max, newxdiff)
+    p['s2z'] = get_s2z(xeff, q, p['s1z'])
+
+    p['R1'] = 1 - p['s1z'] ** 2
+    p['R2'] = 1 - p['s2z'] ** 2
+
+    p['s1x'] = calc_chix(phi=p['phi1'], xy_mag=p['r1'])
+    p['s1y'] = calc_chiy(phi=p['phi1'], xy_mag=p['r1'])
+
+    p['s2x'] = calc_chix(phi=p['phi2'], xy_mag=p['r2'])
+    p['s2y'] = calc_chiy(phi=p['phi2'], xy_mag=p['r2'])
+
+    p['a1'] = np.sqrt(sqr_sum(p['s1x'], p['s1y'], p['s1z']))  # r1 <= 1
+    p['a2'] = np.sqrt(sqr_sum(p['s2x'], p['s2y'], p['s2z']))  # r1 <= 1
+
+    p['cos1'] = p['s1z'] / p['a1']
+    p['cos2'] = p['s2z'] / p['a2']
     return p

@@ -14,6 +14,8 @@ from bilby.gw.prior import CBCPriorDict
 from deep_gw_pe_followup.restricted_prior.conversions import calc_xeff
 from bilby.gw.conversion import generate_all_bbh_parameters
 
+plt.style.use(get_mpl_style())
+
 SIGMA_LEVELS = [1 - np.exp(-0.5), 1 - np.exp(-2), 1 - np.exp(-9 / 2.0)]
 SIGMA_LEVELS = [SIGMA_LEVELS[0], SIGMA_LEVELS[1]]
 ORANGE = "#eaa800"
@@ -108,15 +110,18 @@ def seaborn_plot_hist(
         if len(param) > 0:
             add_letter_marker(ax, param["mass_ratio"], param["chi_eff"], c, label, marker)
 
-    ax.set(xlabel=r"$q$", ylabel=r"$\chi_{\rm eff}$")
+    ax.set_xlabel(r"$q$", labelpad=-15, fontsize=25)
+    ax.set_ylabel(r"$\chi_{\rm eff}$", labelpad=-15, fontsize=25)
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 0.7)
-    ax.set_xticks([0, 0.5, 1])
-    ax.set_yticks([0.1, 0.3, 0.6])
+    ax.set_xticks([0.15, 0.68])
+    ax.set_yticks([0.15,  0.5])
+    ax.grid(False)
 
     leg = ax.legend(frameon=False, markerscale=3.5, fontsize=15)
     for i, line in enumerate(leg.get_lines()):
             line.set_linewidth(10)
+
     plt.minorticks_off()
     plt.tight_layout()
 
@@ -141,7 +146,7 @@ def plot_comparison():
         zorders=[-100, -100, -10, -10],
         linestyles=["solid", "solid", "dashed", "dashed"]
     )
-    plt.savefig(f"{out}/high_low_on_lvk.png")
+    plt.savefig(f"{out}/high_low_on_lvk.png", transparent=True)
 
     print("DONE")
 

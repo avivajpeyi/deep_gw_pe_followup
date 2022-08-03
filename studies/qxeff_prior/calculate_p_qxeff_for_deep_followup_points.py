@@ -12,11 +12,11 @@ ASTRO_SAMPLES_FILE = "astro_qxeff_samples.h5"
 
 NUMERICAL_QXEFF_NORM_FACTOR = 5280.323631278067
 
+LOW_Q = {'q': 0.15, 'xeff': 0.5}
+HIGH_Q = {'q': 0.68, 'xeff': 0.15}
 
 def get_max_l_data():
     return dict(
-        IAS={'q': 0.10537432884262372, 'xeff': 0.5899239152977372},
-        LVK={'q': 0.29103432408863716, 'xeff': 0.2959265313232419},
         LOW_Q = {'q': 0.15, 'xeff': 0.5},
         HIGH_Q = {'q': 0.68, 'xeff': 0.15}
     )
@@ -58,20 +58,36 @@ def calculate_p_with_numerical(params):
         cos2=Uniform(-1, 1)
     ))
     print("Using numerical")
-    for label, param in params.items():
-        prob = p_param_and_xeff(
-            param=param['q'], xeff=param['xeff'],
+
+    repetitions = 100
+    odds = []
+    odds_2 = []
+    for i in range(repetitions):
+
+        low_prob = p_param_and_xeff(
+            param=LOW_Q['q'], xeff=LOW_Q['xeff'],
             init_a1a2qcos2_prior=a1a2qcos2_prior, param_key='q'
         )
-        print(f"ln pi_qxeff({label} pt, {param})--> {np.log(prob/NUMERICAL_QXEFF_NORM_FACTOR)}")
+
+        high_prob = p_param_and_xeff(
+            param=HIGH_Q['q'], xeff=HIGH_Q['xeff'],
+            init_a1a2qcos2_prior=a1a2qcos2_prior, param_key='q'
+        )
+        odd = np.log(high_prob/NUMERICAL_QXEFF_NORM_FACTOR) - np.log(low_prob/NUMERICAL_QXEFF_NORM_FACTOR)
+        odds.append(odd)
+
+        odds_2.append(np.log(high_prob/low_prob))
+
+    print(f"ln pi odds {np.mean(odds):.2f} +/- {np.std(odds):.2f}")
+    print(f"ln pi odds {np.mean(odds_2):.2f} +/- {np.std(odds_2):.2f}")
 
 
 def main():
     params = get_max_l_data()
     calculate_p_with_kde(get_kde_object(SAMPLES_FILE), params)
     calculate_p_with_numerical(params)
-    print("ASTRO KDE")
-    calculate_p_with_kde(get_kde_object(ASTRO_SAMPLES_FILE), params)
+    # print("ASTRO KDE")
+    # calculate_p_with_kde(get_kde_object(ASTRO_SAMPLES_FILE), params)
 
 
 if __name__ == '__main__':

@@ -5,6 +5,7 @@ from deep_gw_pe_followup.restricted_prior.conversions import calc_a2, calc_xp
 import pandas as pd
 from tqdm import tqdm
 
+HIGH_Q = dict(fname="outdir_highq/result/highq_0_result.json", color="tab:green")
 LOW_Q = dict(fname="outdir_loqq/result/lowq_0_result.json", color="tab:green")
 
 PLOT_PARAMS = ["chi_p", "a_1", "a_2", "cos_tilt_1", "cos_tilt_2"]
@@ -48,11 +49,14 @@ def load_res(fname):
 
 
 def main():
-    r = load_res(LOW_Q['fname'])
+    # r = load_res(LOW_Q['fname'])
+    # prior_samp = load_prior_samples(r)
+    # r.posterior[PLOT_PARAMS].to_parquet('posterior.parquet.gzip', compression='gzip')
+    # prior_samp[PLOT_PARAMS].to_parquet('prior.parquet.gzip', compression='gzip')
+    r = load_res(HIGH_Q['fname'])
     prior_samp = load_prior_samples(r)
-    r.posterior[PLOT_PARAMS].to_parquet('posterior.parquet.gzip', compression='gzip')
-    prior_samp[PLOT_PARAMS].to_parquet('prior.parquet.gzip', compression='gzip')
-
+    r.posterior[PLOT_PARAMS].to_parquet('high_q_posterior.parquet.gzip', compression='gzip')
+    prior_samp[PLOT_PARAMS].to_parquet('high_q_prior.parquet.gzip', compression='gzip')
 
 if __name__ == '__main__':
     main()

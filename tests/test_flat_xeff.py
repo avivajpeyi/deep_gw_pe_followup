@@ -2,11 +2,12 @@ import os
 import numpy as np
 import unittest
 
+import bilby
 from bilby.core.prior import PriorDict
 from bilby.core.prior import Uniform, Constraint, ConditionalUniform, ConditionalPriorDict
 
 from deep_gw_pe_followup.flat_xeff_prior.conversions import *
-from deep_gw_pe_followup.flat_xeff_prior.conditionals import(
+from deep_gw_pe_followup.flat_xeff_prior.conditionals import (
     condition_func_xdiff,
     condition_func_chi1pmagSqr,
     condition_func_chi2pmagSqr
@@ -21,6 +22,18 @@ CLEAN_AFTER = False
 
 import corner
 from deep_gw_pe_followup.plotting.corner import CORNER_KWARGS
+
+
+def condition_func_y(reference_params, x):
+    radius = 0.5 * (reference_params["maximum"] - reference_params["minimum"])
+    y_max = np.sqrt(radius ** 2 - x ** 2)
+    return dict(minimum=-y_max, maximum=y_max)
+
+
+def condition_func_z(reference_params, x, y):
+    radius = 0.5 * (reference_params["maximum"] - reference_params["minimum"])
+    z_max = np.sqrt(radius ** 2 - x ** 2 - y ** 2)
+    return dict(minimum=-z_max, maximum=z_max)
 
 
 class TestPrior(unittest.TestCase):
@@ -71,6 +84,17 @@ class TestPrior(unittest.TestCase):
         fig = corner.corner(s.values, labels=labels, **CORNER_KWARGS)
         fig.savefig(f"{self.outdir}/samples.png")
 
+    def test_conditional_prior(self):
+        priors = ConditionalPriorDict(dictionary=dict(
+            x=Uniform(minimum=-1, maximum=1),
+            y=ConditionalUniform(condition_func=condition_func_y, minimum=-1, maximum=1),
+            z=ConditionalUniform(condition_func=condition_func_z, minimum=-1, maximum=1),
+        )).sample(100)
+
+    def test_reading_prior_file(self):
+        p= ConditionalPriorDict(filename="deep_gw_pe_followup/flat_xeff_prior/flat_xeff.prior")
+        p.sample(100)
+
 
 
 def get_flat_in_xeff_prior():
@@ -86,5 +110,3 @@ def get_flat_in_xeff_prior():
         ),
         conversion_function=convert_xeff_xdiff_to_spins
     )
-
-

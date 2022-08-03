@@ -22,8 +22,6 @@ from bilby.gw.conversion import generate_all_bbh_parameters
 from deep_gw_pe_followup.plotting.hist2d import seaborn_plot_hist
 
 TEST_VALS = dict(
-    IAS={"mass_ratio": 0.10537432884262372, "chi_eff": 0.5899239152977372},
-    LVK={"mass_ratio": 0.29103432408863716, "chi_eff": 0.2959265313232419},
     LOW_Q={"mass_ratio": 0.15, "chi_eff": 0.5},
     HIGH_Q={"mass_ratio": 0.68, "chi_eff": 0.15},
 )
@@ -67,9 +65,12 @@ def main():
         print(
             f"posterior prob for {name}: {kde([val['mass_ratio'], val['chi_eff']]) / norm_factor}"
         )
-
+    low_q = kde([TEST_VALS['LOW_Q']['mass_ratio'], TEST_VALS['LOW_Q']['chi_eff']])
+    high_q = kde([TEST_VALS['HIGH_Q']['mass_ratio'], TEST_VALS['HIGH_Q']['chi_eff']])
+    print(high_q/low_q)
 
 if __name__ == "__main__":
-    s = load_lvk_q_xeff_samples()
-    kde = get_kde(s.mass_ratio, s.chi_eff)
-    plot_kde_and_points(kde)
+    # s = load_lvk_q_xeff_samples()
+    # kde = get_kde(s.mass_ratio, s.chi_eff)
+    # plot_kde_and_points(kde)
+    main()
