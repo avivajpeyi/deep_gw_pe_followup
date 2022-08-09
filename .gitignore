@@ -2,6 +2,7 @@ out*
 .ipynb_checkpoints
 *.ipynb
 *.json
+*.tar
 venv
 
 *.gzip
