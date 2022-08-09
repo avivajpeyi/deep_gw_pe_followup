@@ -226,31 +226,7 @@ def plot_psd():
     plt.ylim(1e-49, 1e-32)
     plt.tight_layout()
     plt.savefig("psds.png")
-    
 
-def get_restricted_priors(q, xeff):
-
-    p = {}
-
-    p['mass_ratio']= q
-    p['chi_eff']=xeff
-    p['a_1'] = deep_gw_pe_followup.restricted_prior.PlaceholderPrior(name='a_1')
-    p['cos_tilt_1'] = deep_gw_pe_followup.restricted_prior.PlaceholderPrior(name='cos_tilt_1')
-    p['cos_tilt_2'] = deep_gw_pe_followup.restricted_prior.PlaceholderPrior(name='cos_tilt_2')
-    p['a_2'] = Constraint(name="a_2", minimum=0, maximum=1)
-    p['chirp_mass'] = Uniform(name='chirp_mass', minimum=25, maximum=31)
-    p['phi_12'] = Uniform(name='phi_12', minimum=0, maximum=2 * np.pi, boundary='periodic')
-    p['phi_jl'] = Uniform(name='phi_jl', minimum=0, maximum=2 * np.pi, boundary='periodic')
-#     p['luminosity_distance'] = PowerLaw(alpha=2, name='luminosity_distance', minimum=20, maximum=1500, unit='Mpc', latex_label='$d_L$')
-    p['luminosity_distance'] = DeltaFunction(500, unit='Mpc', latex_label='$d_L$')
-#     p['ra'] =  Uniform(name='ra', minimum=0, maximum=2 * np.pi, boundary='periodic')
-    p['ra'] = DeltaFunction(2.64433731)
-#     p['dec'] = Cosine(name='dec', latex_label='$\\mathrm{DEC}$', unit=None, minimum=-1.5707963267948966, maximum=1.5707963267948966)
-    p['dec'] = DeltaFunction(-1.25977494)
-    p['cos_theta_jn'] = Uniform(minimum=-1, maximum=1, name='cos_theta_jn', latex_label='$\\cos\\theta_{JN}$', unit=None)
-    p['psi'] =  DeltaFunction(1.5707948076735136)
-    p['phase'] =  Uniform(name='phase', minimum=0, maximum=2 * np.pi, boundary='periodic')
-    return RestrictedPrior(dictionary=p)
 
 
 def plot_max_gw150914_params(params = ['dist', 'ra', 'dec', 'psi']):
@@ -275,6 +251,10 @@ def main():
     print(f"O(C/A) = {PTS['C']['z_val']/PTS['A']['z_val']:.2f}")
     print(f"O(A/B) = {PTS['A']['z_val']/PTS['B']['z_val']:.2f}")
     print(f"O(C/B) = {PTS['C']['z_val']/PTS['B']['z_val']:.2f}")
+    print("Plotting priors:")
+    for label, pt in PTS.items():
+        p = RestrictedPrior(filename=f"priors/pt{label}.prior")
+        p.plot_cache()
 
 
 PTS = dict(
@@ -289,13 +269,3 @@ if __name__ == "__main__":
 
 
 # +
-for label, pt in PTS.items():
-    print(f"Getting points for pt {label}")
-    p = get_restricted_priors(q=pt['q'], xeff=pt['xeff'])
-    p.plot_cache()
-
-
-# -
-
-
-p = RestrictedPrior(filename="priors/ptA.prior")
