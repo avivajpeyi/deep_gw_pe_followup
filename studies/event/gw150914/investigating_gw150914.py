@@ -30,6 +30,8 @@ import deep_gw_pe_followup
 from bilby.core.prior import Uniform, DeltaFunction, Constraint
 
 from deep_gw_pe_followup.restricted_prior import RestrictedPrior
+from gwosc.datasets import event_gps
+from gwpy.timeseries import TimeSeries
 
 
 GW150914_POSTERIOR_FN = "data/gw150914.dat"
@@ -43,6 +45,13 @@ SIGMA_LEVELS = [1 - np.exp(-0.5), 1 - np.exp(-2), 1 - np.exp(-9 / 2.0)]
 QLIM, XEFFLIM = (0.5, 1), (-0.2, 0.2)
 
 ORANGE = "#eaa800"
+
+def save_gw150914_data():
+    gps = event_gps("GW150914")
+    for d in ["H1", "L1"]:
+        data = TimeSeries.fetch_open_data(d, gps-5, gps+5)
+        data.write(f"data/{d}.gwf")
+
 
 def download_file(fn, url):
     subprocess.run(
@@ -245,16 +254,17 @@ def plot_max_gw150914_params(params = ['dist', 'ra', 'dec', 'psi']):
 
 
 def main():
-    plot_max_gw150914_params()
-    plot_qxeff(clean=False, heatmap=True, fname="qxeff.png", colorbar=False)
-    plot_psd()
-    print(f"O(C/A) = {PTS['C']['z_val']/PTS['A']['z_val']:.2f}")
-    print(f"O(A/B) = {PTS['A']['z_val']/PTS['B']['z_val']:.2f}")
-    print(f"O(C/B) = {PTS['C']['z_val']/PTS['B']['z_val']:.2f}")
-    print("Plotting priors:")
-    for label, pt in PTS.items():
-        p = RestrictedPrior(filename=f"priors/pt{label}.prior")
-        p.plot_cache()
+    save_gw150914_data()
+    # plot_max_gw150914_params()
+    # plot_qxeff(clean=False, heatmap=True, fname="qxeff.png", colorbar=False)
+    # plot_psd()
+    # print(f"O(C/A) = {PTS['C']['z_val']/PTS['A']['z_val']:.2f}")
+    # print(f"O(A/B) = {PTS['A']['z_val']/PTS['B']['z_val']:.2f}")
+    # print(f"O(C/B) = {PTS['C']['z_val']/PTS['B']['z_val']:.2f}")
+    # print("Plotting priors:")
+    # for label, pt in PTS.items():
+    #     p = RestrictedPrior(filename=f"priors/pt{label}.prior")
+    #     p.plot_cache()
 
 
 PTS = dict(
