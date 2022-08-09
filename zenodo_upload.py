@@ -13,24 +13,13 @@ FILEPATH=sys.argv[1]
 ZENODO_URL='https://sandbox.zenodo.org/api/deposit/depositions'
 
 
-# check if we can access zenodo
 print(f"Accessing zenodo with token: {ACCESS_TOKEN}")
-r = requests.post(
-        ZENODO_URL,
-        params={'access_token': ACCESS_TOKEN}, json={},
-)
-print(f"Access to zendo: {r.json()}")
-
-
-bucket_url = r.json()['links']['bucket']
 print(f"Uploading {FILEPATH}")
 r = requests.put(
-        '%s/%s' % (bucket_url,FILEPATH),
+        f"https://zenodo.org/api/deposit/depositions/{DEPOSITION}/files",
         data=open(FILEPATH, 'rb'),
         headers={"Accept":"application/json",
-        "Authorization":"Bearer %s" % ACCESS_TOKEN,
+        f"Authorization":"Bearer {ACCESS_TOKEN}",
         "Content-Type":"application/octet-stream"}
 )
-
-
-print(f"Upload status: {r.json()}")
+print(f"Upload status:\n{r.json()}")
