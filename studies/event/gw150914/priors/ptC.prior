@@ -1,0 +1,17 @@
+mass_ratio = 0.78
+chi_eff = -0.04
+
+a_1 = deep_gw_pe_followup.restricted_prior.PlaceholderPrior(name='a_1')
+cos_tilt_1 = deep_gw_pe_followup.restricted_prior.PlaceholderPrior(name='cos_tilt_1')
+cos_tilt_2  = deep_gw_pe_followup.restricted_prior.PlaceholderPrior(name='cos_tilt_2')
+a_2 = Constraint(name="a_2", minimum=0, maximum=1)
+chirp_mass = Uniform(minimum=25, maximum=31, name='chirp_mass', latex_label='$\\mathcal{M}$', unit=None, boundary=None)
+phi_12 = Uniform(minimum=0, maximum=6.283185307179586, name='phi_12', latex_label='$\\Delta\\phi$', unit=None, boundary='periodic')
+phi_jl = Uniform(minimum=0, maximum=6.283185307179586, name='phi_jl', latex_label='$\\phi_{JL}$', unit=None, boundary='periodic')
+luminosity_distance = DeltaFunction(peak=500, name=None, latex_label='$d_L$', unit='Mpc')
+ra = DeltaFunction(peak=2.64433731, name=None, latex_label=None, unit=None)
+dec = DeltaFunction(peak=-1.25977494, name=None, latex_label=None, unit=None)
+cos_theta_jn = Uniform(minimum=-1, maximum=1, name='cos_theta_jn', latex_label='$\\cos\\theta_{JN}$', unit=None, boundary=None)
+psi = DeltaFunction(peak=1.5707948076735136, name=None, latex_label=None, unit=None)
+phase = Uniform(minimum=0, maximum=6.283185307179586, name='phase', latex_label='$\\phi$', unit=None, boundary='periodic')
+geocent_time = 1126259462.4
