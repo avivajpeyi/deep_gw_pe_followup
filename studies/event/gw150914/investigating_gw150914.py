@@ -30,12 +30,17 @@ import deep_gw_pe_followup
 from bilby.core.prior import Uniform, DeltaFunction, Constraint
 
 from deep_gw_pe_followup.restricted_prior import RestrictedPrior
-from gwosc.datasets import event_gps
-from gwpy.timeseries import TimeSeries
+
 
 
 GW150914_POSTERIOR_FN = "data/gw150914.dat"
 GW150914_POSTERIOR_URL = "https://raw.githubusercontent.com/prayush/GW150914_GW170104_NRSur7dq2_Posteriors/master/GW150914/NRSur7dq2_RestrictedPriors.dat"
+GW150914_TIMESERIES = dict(
+    h1="https://www.gw-openscience.org/GW150914data/H-H1_LOSC_4_V2-1126259446-32.gwf"
+    l1="https://www.gw-openscience.org/GW150914data/L-L1_LOSC_4_V2-1126259446-32.gwf"
+)
+
+
 
 PSD_FN = dict(h1="data/h1_psd.txt",l1="data/l1_psd.txt")
 PSD_URL = "https://git.ligo.org/lscsoft/parallel_bilby/-/raw/master/examples/GW150914_IMRPhenomPv2/psd_data/{}_psd.txt?inline=false"
@@ -47,10 +52,8 @@ QLIM, XEFFLIM = (0.5, 1), (-0.2, 0.2)
 ORANGE = "#eaa800"
 
 def save_gw150914_data():
-    gps = event_gps("GW150914")
-    for d in ["H1", "L1"]:
-        data = TimeSeries.fetch_open_data(d, gps-5, gps+5)
-        data.write(f"data/{d}.gwf")
+    for d, url in GW150914_TIMESERIES.items():
+        download_file(f"data/{d}.gwf", url)
 
 
 def download_file(fn, url):
