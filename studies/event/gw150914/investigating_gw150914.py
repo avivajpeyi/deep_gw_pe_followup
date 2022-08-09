@@ -36,7 +36,7 @@ from deep_gw_pe_followup.restricted_prior import RestrictedPrior
 GW150914_POSTERIOR_FN = "data/gw150914.dat"
 GW150914_POSTERIOR_URL = "https://raw.githubusercontent.com/prayush/GW150914_GW170104_NRSur7dq2_Posteriors/master/GW150914/NRSur7dq2_RestrictedPriors.dat"
 GW150914_TIMESERIES = dict(
-    h1="https://www.gw-openscience.org/GW150914data/H-H1_LOSC_4_V2-1126259446-32.gwf"
+    h1="https://www.gw-openscience.org/GW150914data/H-H1_LOSC_4_V2-1126259446-32.gwf",
     l1="https://www.gw-openscience.org/GW150914data/L-L1_LOSC_4_V2-1126259446-32.gwf"
 )
 
