@@ -11,6 +11,7 @@ def adjust_prior(json_path):
     outdir = os.path.dirname(json_path)
     label = os.path.basename(json_path).split("_prior.json")[0]
     prior.to_json(outdir=outdir, label=label)
+    print("Re-adjusted prior for deep-followup")
 
 def main():
     filename = sys.argv[-1]

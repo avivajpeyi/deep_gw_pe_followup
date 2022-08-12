@@ -65,7 +65,9 @@ setup(name=NAME,
       setup_requires=['wheel'],
       entry_points={
           'console_scripts': [
-              'preprocess_prior=deep_gw_pe_followup.utils.adjust_pbilby_prior_json:main'
+              'preprocess_prior=deep_gw_pe_followup.utils.adjust_pbilby_prior_json:main',
+              'deep_followup_setup=deep_gw_pe_followup.pe_generation_step:main'
+
           ]
       },
 

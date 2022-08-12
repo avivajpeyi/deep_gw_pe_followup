@@ -33,6 +33,7 @@ from deep_gw_pe_followup.restricted_prior import RestrictedPrior
 
 
 
+
 GW150914_POSTERIOR_FN = "data/gw150914.dat"
 GW150914_POSTERIOR_URL = "https://raw.githubusercontent.com/prayush/GW150914_GW170104_NRSur7dq2_Posteriors/master/GW150914/NRSur7dq2_RestrictedPriors.dat"
 GW150914_TIMESERIES = dict(
@@ -52,8 +53,24 @@ QLIM, XEFFLIM = (0.5, 1), (-0.2, 0.2)
 ORANGE = "#eaa800"
 
 def save_gw150914_data():
-    for d, url in GW150914_TIMESERIES.items():
-        download_file(f"data/{d}.gwf", url)
+    # can only run on machine with nds2
+    from gwosc.datasets import event_gps
+    from gwpy.timeseries import TimeSeries
+    trigger_time = event_gps("GW150914")
+
+    end_time = trigger_time + 2.1
+    start_time = end_time - 4 - 0.1
+
+    channel = "DCS-CALIB_STRAIN_C02"
+
+    for d in ["H1", "L1"]:
+        data = TimeSeries.get(f"{d}:channel",
+                              start_time,
+                              end_time,
+                              allow_tape=True)
+        TimeSeries.write(data,
+                         target=f'.data/{d}.gwf',
+                         format='gwf')
 
 
 def download_file(fn, url):
@@ -257,17 +274,17 @@ def plot_max_gw150914_params(params = ['dist', 'ra', 'dec', 'psi']):
 
 
 def main():
-    save_gw150914_data()
-    # plot_max_gw150914_params()
-    # plot_qxeff(clean=False, heatmap=True, fname="qxeff.png", colorbar=False)
-    # plot_psd()
-    # print(f"O(C/A) = {PTS['C']['z_val']/PTS['A']['z_val']:.2f}")
-    # print(f"O(A/B) = {PTS['A']['z_val']/PTS['B']['z_val']:.2f}")
-    # print(f"O(C/B) = {PTS['C']['z_val']/PTS['B']['z_val']:.2f}")
-    # print("Plotting priors:")
-    # for label, pt in PTS.items():
-    #     p = RestrictedPrior(filename=f"priors/pt{label}.prior")
-    #     p.plot_cache()
+    # save_gw150914_data()
+    plot_max_gw150914_params()
+    plot_qxeff(clean=False, heatmap=True, fname="qxeff.png", colorbar=False)
+    plot_psd()
+    print(f"O(C/A) = {PTS['C']['z_val']/PTS['A']['z_val']:.2f}")
+    print(f"O(A/B) = {PTS['A']['z_val']/PTS['B']['z_val']:.2f}")
+    print(f"O(C/B) = {PTS['C']['z_val']/PTS['B']['z_val']:.2f}")
+    print("Plotting priors:")
+    for label, pt in PTS.items():
+        p = RestrictedPrior(filename=f"priors/pt{label}.prior")
+        p.plot_cache()
 
 
 PTS = dict(
