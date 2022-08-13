@@ -19,7 +19,7 @@ r = requests.put(
         f"https://zenodo.org/api/deposit/depositions/{DEPOSITION}/files",
         data=open(FILEPATH, 'rb'),
         headers={"Accept":"application/json",
-        f"Authorization":"Bearer {ACCESS_TOKEN}",
+        f"Authorization":f"Bearer {ACCESS_TOKEN}",
         "Content-Type":"application/octet-stream"}
 )
 print(f"Upload status:\n{r.json()}")
