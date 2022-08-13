@@ -366,9 +366,11 @@ class RestrictedPrior(CBCPriorDict):
         plt.tight_layout()
         plt.savefig(f"{self.cache}/plot.png")
 
-    def normalisation_check(self, verbose=False):
-        a = np.linspace(0, 1, 1000)
-        cos = np.linspace(-1, 1, 1000)
+    def normalisation_check(self, verbose=True):
+        if verbose:
+            print("Checking if priors are properly normalised:")
+        a = np.linspace(0, 1, 10000)
+        cos = np.linspace(-1, 1, 10000)
         p_a1 = self['a_1']
         a1_val = p_a1.sample()
         p_cos1 = self.get_cos1_prior(a1_val)
