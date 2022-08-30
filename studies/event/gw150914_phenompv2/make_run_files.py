@@ -67,8 +67,7 @@ psi = 1.5707948076735136
 geocent_time = 1126259462.4
 """
 
-SUBMIT_TEMPLATE = """
-#!/bin/bash
+SUBMIT_TEMPLATE = """#!/bin/bash
 #
 #SBATCH --job-name=setup_followup
 #SBATCH --output=setup.log
@@ -108,7 +107,7 @@ def make_files():
 def make_pt_file(label, pt, outdir):
     print(f"Making files for pt: {label}")
     ini = f"{outdir}/pt_{label}.ini"
-    prior = f"{outdir}/priors/pt_{label}.prior"
+    prior = f"priors/pt_{label}.prior"
 
     with open(ini,"w") as f:
         ini_txt = INI_TEMPLATE
@@ -118,7 +117,7 @@ def make_pt_file(label, pt, outdir):
         ini_txt = ini_txt.replace("PRIORFILE", prior)
         f.write(ini_txt)
 
-    with open(prior,"w") as f:
+    with open(f"{outdir}/{prior}","w") as f:
         pri_txt = PRIOR_TEMPLATE
         pri_txt = ini_txt.replace("MASS_RATIO", str(pt['q']))
         pri_txt = ini_txt.replace("CHI_EFF", str(pt['xeff']))

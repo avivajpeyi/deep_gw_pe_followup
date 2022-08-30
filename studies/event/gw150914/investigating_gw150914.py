@@ -193,7 +193,7 @@ loaded_results = {n:CBCResult.from_json(p) for p, n in zip(result_files, names)}
 for name, res in loaded_results.items():
     fig = res.plot_corner(parameters=["mass_1","mass_2"], save=False)
     fig.suptitle(name)
-    
+
 
 # +
 def posterior_odds(prior_odds_z0_by_z1, ln_z0, ln_z0):
