@@ -2,12 +2,12 @@ import numpy as np
 from scipy import stats
 import matplotlib.pyplot as plt
 from deep_gw_pe_followup.plotting.hist2d import plot_probs
+import os
 
-GRID_POINTS = 20j
+GRID_POINTS = 500j
 
 
 def get_kde(x: np.ndarray, y: np.ndarray) -> stats.gaussian_kde:
-    print("builing KDE")
     return stats.gaussian_kde(np.vstack([x, y]))
 
 
@@ -17,41 +17,28 @@ def evaluate_kde_on_grid(kde, x, y, num_gridpoints=GRID_POINTS):
     x_grid, y_grid = np.mgrid[xmin:xmax:num_gridpoints, ymin:ymax:num_gridpoints]
     xy_array = np.vstack([x_grid.ravel(), y_grid.ravel()])
     z = kde(xy_array).T
-    # z = z / np.sum(z)
-    return xy_array[0], xy_array[1], z
+    return x_grid, y_grid, z.reshape(x_grid.shape)
 
 
 def plot_kde(kde, xrange, yrange, xlabel, ylabel, fname):
-    x, y, prob = evaluate_kde_on_grid(kde, xrange, yrange, num_gridpoints=100j)
+    x, y, prob = evaluate_kde_on_grid(kde, xrange, yrange, num_gridpoints=GRID_POINTS)
     norm_factor = np.sum(prob)
     print(f"norm_factor: {norm_factor}")
     plot_probs(x, y, prob, xlabel=xlabel, ylabel=ylabel, fname=fname)
     return norm_factor
 
 
-from typing import Dict
+def calc_and_save_kde_grid(fname, samples):
+    kde = get_kde(samples.q, samples.xeff)
+    qrange = [min(samples.q),max(samples.q)]
+    xeffrange = [min(samples.xeff),max(samples.xeff)]
+    x, y, z = evaluate_kde_on_grid(kde, x=qrange, y=xeffrange, num_gridpoints=GRID_POINTS)
+    np.savez_compressed(fname, x=x, y=y, z=z)
 
 
-class KDE2D:
-    def __init__(self, data: Dict):
-        self.x_label = data.keys()[0]
-        self.y_label = data.keys()[1]
-        self.x = data[self.x_label]
-        self.y = data[self.y_label]
-
-    @property
-    def normalize_factor(self):
-        pass
-
-    def plot(self):
-        pass
-
-    def eval(self, x, y):
-        pass
-
-    @classmethod
-    def from_pickle(cls):
-        pass
-
-    def save_pickle(self, fname):
-        pass
+def load_kde_gridpts(fname, clean=False, samples=None):
+    if clean and os.path.isfile(fname):
+        os.remove(fname)
+    if not os.path.isfile(fname):
+        calc_and_save_kde_grid(fname, samples)
+    return np.load(fname)
