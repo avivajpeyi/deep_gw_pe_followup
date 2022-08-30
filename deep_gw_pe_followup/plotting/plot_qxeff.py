@@ -50,13 +50,13 @@ def plot_qxeff(gridfname, samples, clean=False, heatmap=True, fname="qxeff.png",
 
     for l, pt in pts.items():
         add_letter_marker(
-            ax, pt["q"], pt["xeff"], pt["color"], f"{l} ({z_vals[l]:0.2f})"
+            ax, pt["q"], pt["xeff"], pt["color"], f"{l}"
         )
 
 
     ax.set(xlabel=r"$q$", ylabel=r"$\chi_{\rm eff}$")
-    # ax.set_xlim(*QLIM)
-    # ax.set_ylim(*XEFFLIM)
+    ax.set_xlim(min(samples.q), max(samples.q))
+    ax.set_ylim(min(samples.xeff), max(samples.xeff))
     # ax.set_xticks([0.5, 1])
     # ax.set_yticks([-0.2, 0, 0.2])
     plt.minorticks_off()

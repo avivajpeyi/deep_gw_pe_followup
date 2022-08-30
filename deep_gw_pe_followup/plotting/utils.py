@@ -85,7 +85,7 @@ def add_letter_marker(ax, x, y, color, letter):
     kwgs = dict(color=color, zorder=100)
     ax.scatter(x, y, marker=".", s=10, **kwgs)
     ax.annotate(letter, xy=(x, y), xycoords='data',
-                xytext=(5, 0), textcoords='offset points', **kwgs)
+                xytext=(5, 0), textcoords='offset points', **kwgs, fontsize= 6)
 
 def lab_to_rgb(*args):
     """Convert Lab color to sRGB, with components clipped to (0, 1)."""
@@ -247,3 +247,4 @@ def add_cntr(ax, x,y, color, label="",  add_heat=200j, plot_median=False, label_
     if plot_median:
         ax.plot(np.median(x), np.median(y), color=c, zorder=100, label=label)
         ax.scatter(np.median(x), np.median(y), color=c, zorder=100)
+        print(f"median point: {np.median(x)}, {np.median(y)}")
