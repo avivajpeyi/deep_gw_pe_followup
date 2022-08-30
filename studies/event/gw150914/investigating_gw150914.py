@@ -168,4 +168,31 @@ PTS = dict(
 
 if __name__ == "__main__":
     main()
+
+# +
+import glob
+from bilby.gw.result import CBCResult
+import os
+
+result_files = glob.glob("out*/res*/*.json")
+names = [os.path.basename(p).split("_")[0] for p in result_files]
+loaded_results = {n:CBCResult.from_json(p) for p, n in zip(result_files, names)}
+
+
 # -
+
+for name, res in loaded_results.items():
+    fig = res.plot_corner(parameters=["mass_1","mass_2"], save=False)
+    fig.suptitle(name)
+    
+
+# +
+def posterior_odds(prior_odds_z0_by_z1, ln_z0, ln_z0):
+    ln_bf = ln_z0 - ln_z1
+    return prior_odds_z0_by_z1 * np.exp(ln_bf)
+
+
+ln_z0 = loaded_results['ptA'].log_evidence
+ln_z1 = loaded_results['ptC'].log_evidence
+
+posterior_odds(prior_odds_z0_by_z1=1.05, )
