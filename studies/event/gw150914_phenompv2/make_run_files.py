@@ -113,7 +113,7 @@ def make_pt_file(label, pt, outdir):
         ini_txt = INI_TEMPLATE
         l = f"pt{label}"
         ini_txt = ini_txt.replace("LABEL", l)
-        ini_txt = ini_txt.replace("OUTDIR", f"out_pt{l}")
+        ini_txt = ini_txt.replace("OUTDIR", f"out_{l}")
         ini_txt = ini_txt.replace("PRIORFILE", prior)
         f.write(ini_txt)
 
