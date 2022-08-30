@@ -119,8 +119,8 @@ def make_pt_file(label, pt, outdir):
 
     with open(f"{outdir}/{prior}","w") as f:
         pri_txt = PRIOR_TEMPLATE
-        pri_txt = ini_txt.replace("MASS_RATIO", str(pt['q']))
-        pri_txt = ini_txt.replace("CHI_EFF", str(pt['xeff']))
+        pri_txt = pri_txt.replace("MASS_RATIO", str(pt['q']))
+        pri_txt = pri_txt.replace("CHI_EFF", str(pt['xeff']))
         f.write(pri_txt)
 
 
