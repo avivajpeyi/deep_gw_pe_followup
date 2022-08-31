@@ -20,11 +20,15 @@ PTSTR = "pi(q,xeff| {} )"
 def print_isotropic_spin_qxeff_prior_odds(pts):
     assert len(pts) >  1, "Incorrect q, xeff provided"
 
+    odds = {}
     print("Isotropic Prior odds: ")
     for combo in list(combinations(pts.keys(),r=2)):
         pt0, pt1 = pts[combo[0]], pts[combo[1]]
         o = _calc_prior_odds(pt0, pt1)
+        odds[f"{combo[0]}:{combo[1]}"] = o
         print(f">>> {PTSTR.format(combo[0])}/{PTSTR.format(combo[1])} = {o}")
+    return odds
+
 
 
 
