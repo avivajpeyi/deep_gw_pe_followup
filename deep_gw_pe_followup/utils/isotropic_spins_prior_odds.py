@@ -38,7 +38,7 @@ def _calc_prior_odds(pt0, pt1):
 
 
 
-def get_isotropic_spin_prior_samples(n=10000):
+def get_isotropic_spin_prior_samples(n=100000):
     prior = ISOTROPIC_SPIN_PRIOR.copy()
     prior['cos1'] = Uniform(-1, 1)
     s = pd.DataFrame(prior.sample(n))

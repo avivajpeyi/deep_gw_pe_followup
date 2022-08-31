@@ -149,26 +149,26 @@ def main():
     gw150914_samples = load_gw150914_samples()
     plot_qxeff(gridfname="gw150914_kde.npz", clean=False, heatmap=True, fname="gw150914_qxeff.png", colorbar=False, samples=gw150914_samples, pts=PTS)
     iso_spin_prior_sample = get_isotropic_spin_prior_samples()
-    plot_qxeff(gridfname="isospin_prior_kde.npz", clean=False, heatmap=True, fname="isospin_prior_qxeff.png", colorbar=False, samples=iso_spin_prior_sample, pts=PTS)
+    plot_qxeff(gridfname="isospin_prior_kde.npz", clean=True, heatmap=True, fname="isospin_prior_qxeff.png", colorbar=False, samples=iso_spin_prior_sample, pts=PTS)
     plot_psd()
 
 
 
 
 PTS = dict(
-    # A=dict(q=0.7, xeff=0.02, color="tab:blue"),
+    A=dict(q=0.7, xeff=0.02, color="tab:blue"),
     # B=dict(q=0.9, xeff=-0.1, color="tab:green"),
-    # C=dict(q=0.78, xeff=-0.04, color="tab:red"),
+    C=dict(q=0.78, xeff=-0.04, color="tab:red"),
     # D=dict(q=0.95, xeff=-0.01, color="tab:purple"),
 )
 
 
-START_Q, START_XEFF = 0.85, 0
-
-PTS = {"0":dict(q=START_Q, xeff=START_XEFF, color="k")}
-for i in range(1,3):
-    PTS.update({f"{i}":dict(q=START_Q+i*(0.05), xeff=START_XEFF, color="k")})
-    PTS.update({f"{i+2}":dict(q=START_Q, xeff=START_XEFF+i*(0.05), color="k")})
+# START_Q, START_XEFF = 0.85, 0
+#
+# PTS = {"0":dict(q=START_Q, xeff=START_XEFF, color="k")}
+# for i in range(1,3):
+#     PTS.update({f"{i}":dict(q=START_Q+i*(0.05), xeff=START_XEFF, color="k")})
+#     PTS.update({f"{i+2}":dict(q=START_Q, xeff=START_XEFF+i*(0.05), color="k")})
 
 
 for l, pt in PTS.items():
@@ -196,12 +196,12 @@ for name, res in loaded_results.items():
 
 
 # +
-def posterior_odds(prior_odds_z0_by_z1, ln_z0, ln_z0):
-    ln_bf = ln_z0 - ln_z1
-    return prior_odds_z0_by_z1 * np.exp(ln_bf)
-
-
-ln_z0 = loaded_results['ptA'].log_evidence
-ln_z1 = loaded_results['ptC'].log_evidence
-
-posterior_odds(prior_odds_z0_by_z1=1.05, )
+# def posterior_odds(prior_odds_z0_by_z1, ln_z0, ln_z0):
+#     ln_bf = ln_z0 - ln_z1
+#     return prior_odds_z0_by_z1 * np.exp(ln_bf)
+#
+#
+# ln_z0 = loaded_results['ptA'].log_evidence
+# ln_z1 = loaded_results['ptC'].log_evidence
+#
+# posterior_odds(prior_odds_z0_by_z1=1.05, )

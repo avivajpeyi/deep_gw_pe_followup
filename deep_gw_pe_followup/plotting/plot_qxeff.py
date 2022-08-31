@@ -64,4 +64,4 @@ def plot_qxeff(gridfname, samples, clean=False, heatmap=True, fname="qxeff.png",
 
     plt.tight_layout()
 
-    plt.savefig(fname, transparent=True, dpi=200)
+    plt.savefig(fname, transparent=False, dpi=200)

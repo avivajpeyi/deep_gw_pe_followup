@@ -74,15 +74,15 @@ SUBMIT_TEMPLATE = """#!/bin/bash
 #
 #SBATCH --ntasks=1
 #SBATCH --time=00:40:00
-#SBATCH --mem=2GB
+#SBATCH --mem=8GB
 #SBATCH --cpus-per-task=1
-#SBATCH --array=0-5
+#SBATCH --array=0-4
 
 module --force purge && module load git/2.18.0 git-lfs/2.4.0 gcc/9.2.0 openmpi/4.0.2 numpy/1.19.2-python-3.8.5 mpi4py/3.0.3-python-3.8.5
 module unload zlib
 source /fred/oz980/avajpeyi/envs/sstar_venv/bin/activate
 
-deep_followup_setup pt_${SLURM_ARRAY_TASK_ID}.ini
+deep_followup_setup pt_${SLURM_ARRAY_TASK_ID}.ini &> setup_${SLURM_ARRAY_TASK_ID}.log
 """
 
 PTS = {
