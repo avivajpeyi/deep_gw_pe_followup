@@ -24,9 +24,9 @@ def print_isotropic_spin_qxeff_prior_odds(pts):
     print("Isotropic Prior odds: ")
     for combo in list(combinations(pts.keys(),r=2)):
         pt0, pt1 = pts[combo[0]], pts[combo[1]]
-        o = _calc_prior_odds(pt0, pt1)
+        ostr, o = _calc_prior_odds(pt0, pt1)
         odds[f"{combo[0]}:{combo[1]}"] = o
-        print(f">>> {PTSTR.format(combo[0])}/{PTSTR.format(combo[1])} = {o}")
+        print(f">>> {PTSTR.format(combo[0])}/{PTSTR.format(combo[1])} = {ostr}")
     return odds
 
 
@@ -38,7 +38,7 @@ def _calc_prior_odds(pt0, pt1):
         pi_0 = p_param_and_xeff(param=pt0['q'], xeff=pt0['xeff'], **KWGS)
         pi_1 = p_param_and_xeff(param=pt1['q'], xeff=pt1['xeff'], **KWGS)
         odds.append(pi_0/pi_1)
-    return f"{np.mean(odds):.2f} +/- {np.std(odds):.2f}"
+    return f"{np.mean(odds):.2f} +/- {np.std(odds):.2f}", np.mean(odds)
 
 
 
