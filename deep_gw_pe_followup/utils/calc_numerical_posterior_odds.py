@@ -13,11 +13,11 @@ def load_results(res_regex)->Dict:
     result_files = glob.glob(res_regex)
     names = [os.path.basename(p).split("_")[0] for p in result_files]
     loaded_results = {}
-    for  p, n in zip(result_files, names)
+    for  p, n in zip(result_files, names):
         try:
             loaded_results[n] = extract_res_info(p)
         except Exception as e:
-            pass 
+            pass
     return loaded_results
 
 def extract_res_info(path):
