@@ -41,7 +41,7 @@ def get_results_and_compute_posterior_odds(res_regex):
     for rkey in list(combinations(results.keys(),r=2)):
         pt0, pt1 = results[rkey[0]], results[rkey[1]]
         _, pri_o = _calc_prior_odds(pt0, pt1)
-        post_o = posterior_odds(pri_o, pt0.log_evidence, pt1.log_evidence)
+        post_o = posterior_odds(pri_o, pt0["log_evidence"], pt1["log_evidence"])
         odds[f"{rkey[0]}:{rkey[1]}"] = post_o
         print(f">>> O({rkey[0]}/{rkey[1]} = {post_o}")
     return odds
