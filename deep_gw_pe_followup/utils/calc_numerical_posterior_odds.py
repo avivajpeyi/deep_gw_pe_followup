@@ -16,7 +16,7 @@ def load_results(res_regex)->Dict:
     return loaded_results
 
 def extract_res_info(path):
-    r = CBCResult.from_json(p)
+    r = CBCResult.from_json(path)
     return {
         "log_evidence": r.log_evidence,
         "log_evidence_err": r.log_evidence_err,
