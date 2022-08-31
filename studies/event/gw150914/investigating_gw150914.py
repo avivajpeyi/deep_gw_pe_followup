@@ -149,7 +149,7 @@ def main():
     gw150914_samples = load_gw150914_samples()
     plot_qxeff(gridfname="gw150914_kde.npz", clean=False, heatmap=True, fname="gw150914_qxeff.png", colorbar=False, samples=gw150914_samples, pts=PTS)
     iso_spin_prior_sample = get_isotropic_spin_prior_samples()
-    plot_qxeff(gridfname="isospin_prior_kde.npz", clean=True, heatmap=True, fname="isospin_prior_qxeff.png", colorbar=False, samples=iso_spin_prior_sample, pts=PTS)
+    plot_qxeff(gridfname="isospin_prior_kde.npz", clean=False, heatmap=True, fname="isospin_prior_qxeff.png", colorbar=False, samples=iso_spin_prior_sample, pts=PTS)
     plot_psd()
 
 
@@ -163,12 +163,12 @@ PTS = dict(
 )
 
 
-# START_Q, START_XEFF = 0.85, 0
-#
-# PTS = {"0":dict(q=START_Q, xeff=START_XEFF, color="k")}
-# for i in range(1,3):
-#     PTS.update({f"{i}":dict(q=START_Q+i*(0.05), xeff=START_XEFF, color="k")})
-#     PTS.update({f"{i+2}":dict(q=START_Q, xeff=START_XEFF+i*(0.05), color="k")})
+START_Q, START_XEFF = 0.85, 0
+
+PTS = {"0":dict(q=START_Q, xeff=START_XEFF, color="k")}
+for i in range(1,3):
+    PTS.update({f"{i}":dict(q=START_Q+i*(0.05), xeff=START_XEFF, color="k")})
+    PTS.update({f"{i+2}":dict(q=START_Q, xeff=START_XEFF+i*(0.05), color="k")})
 
 
 for l, pt in PTS.items():

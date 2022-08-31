@@ -31,20 +31,27 @@ def extract_res_info(path):
 
 
 def get_results_and_compute_posterior_odds(res_regex):
-    odds = {}
+    pri_odds, post_odds = {}, {}
     results = load_results(res_regex)
     if len(results)==0:
         print("No results found, cant compute posterior odds")
-        return odds
+        return pri_odds, post_odds
 
-    print("Posterior odds: ")
     for rkey in list(combinations(results.keys(),r=2)):
         pt0, pt1 = results[rkey[0]], results[rkey[1]]
         _, pri_o = _calc_prior_odds(pt0, pt1)
         post_o = posterior_odds(pri_o, pt0["log_evidence"], pt1["log_evidence"])
-        odds[f"{rkey[0]}:{rkey[1]}"] = post_o
-        print(f">>> O({rkey[0]}/{rkey[1]} = {post_o}")
-    return odds
+        post_odds[f"{rkey[0]}:{rkey[1]}"] = post_o
+        pri_odds[f"{rkey[0]}:{rkey[1]}"] = pri_o
+
+
+    for k in post_odds.keys():
+        print(f"Points {k}:")
+        print(f">>> prior odds = {pri_odds[k]}")
+        print(f">>> bayes fact = {post_odds[k]/pri_odds[k]}")
+        print(f">>> postr odds = {post_odds[k]}")
+    
+    return pri_odds, post_odds
 
 
 
