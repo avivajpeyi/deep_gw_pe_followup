@@ -195,13 +195,80 @@ for name, res in loaded_results.items():
     fig.suptitle(name)
 
 
+loaded_results.keys()
+
 # +
-# def posterior_odds(prior_odds_z0_by_z1, ln_z0, ln_z0):
-#     ln_bf = ln_z0 - ln_z1
-#     return prior_odds_z0_by_z1 * np.exp(ln_bf)
-#
-#
-# ln_z0 = loaded_results['ptA'].log_evidence
-# ln_z1 = loaded_results['ptC'].log_evidence
-#
-# posterior_odds(prior_odds_z0_by_z1=1.05, )
+import matplotlib.pyplot as plt
+import pandas as pd
+from matplotlib.lines import Line2D
+
+import numpy as np
+
+def get_normalisation_weight(len_current_samples, len_of_longest_samples):
+    return np.ones(len_current_samples) * (len_of_longest_samples / len_current_samples)
+
+
+
+
+# -
+
+old_res = "/fred/oz980/avajpeyi/projects/GW150914_downsampled_posterior_samples.dat"
+old = pd.read_csv(old_res, delimiter=" ")
+
+
+# +
+from corner import corner
+p = ['mass_1','mass_2']
+leg_colrs = dict(
+    GWTC="black",
+    AVI_FULL='red',
+    DEEP_A="green",
+    DEEP_C="purple"
+)
+
+
+
+max_len = 50000
+
+
+posts = [
+    loaded_results['ptA'].posterior[p],
+    loaded_results['ptC'].posterior[p],
+    loaded_results['full'].posterior[p]
+]
+
+
+KW = dict(plot_datapoints=False,smooth=0.9,max_n_ticks=3, labels=['m1','m2'], plot_density=False, levels=(0.68,))
+f = corner(old[p], **KW)
+f = corner(posts[0], fig=f, color="green", **KW,
+          weights=get_normalisation_weight(len(posts[0]), max_len))
+f = corner(posts[1], fig=f, color="purple", **KW,
+          weights=get_normalisation_weight(len(posts[1]), max_len),)
+f = corner(posts[2], fig=f, color="red", **KW,
+          weights=get_normalisation_weight(len(posts[2]), max_len),)
+
+
+leg_colrs = dict(
+    GWTC="black",
+    AVI_FULL='red',
+    DEEP_A="green",
+    DEEP_C="purple"
+)
+
+custom_lines = []
+for l, cl in leg_colrs.items():
+    custom_lines.append(Line2D([0], [0], color=cl, lw=4))
+l = plt.legend(custom_lines, list(leg_colrs.keys()), frameon=False, fontsize=14, loc=(0.3, 1))
+# -
+
+len(old)
+
+old.log_likelihood
+
+loaded_results['full'].posterior.log_likelihood
+
+plt.hist(old.log_likelihood, density=True, histtype='step', color="black", label="GWTC")
+plt.hist(loaded_results['full'].posterior.log_likelihood, density=True, histtype='step', color="red", label="AVI GW150914")
+plt.xlabel("Log Likelihood")
+plt.legend(frameon=False, fontsize=14)
+
