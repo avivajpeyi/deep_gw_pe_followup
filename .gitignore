@@ -1,3 +1,4 @@
+*.gwf
 out*
 .ipynb_checkpoints
 *.ipynb
