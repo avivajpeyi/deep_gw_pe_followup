@@ -216,7 +216,7 @@ class RestrictedPrior(CBCPriorDict):
             max_b = max(cos2s)
 
         if min_b == max_b:
-            logger.warning(f"setting delta cos1 prior given a1={given_a1}, cos1={given_cos1}")
+            logger.warning(f"setting delta cos2 prior given a1={given_a1}, cos1={given_cos1}")
             return PlaceholderDelta(peak=min_b, name="cos_tilt_2", latex_label=r"$\cos \theta_2$")
 
         return Interped(
