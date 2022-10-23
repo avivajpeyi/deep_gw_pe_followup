@@ -83,7 +83,7 @@ def plot_cache(p, a1):
 
 
 if __name__ == "__main__":
-    highq_prior = RestrictedPrior(filename="priors/high_q.prior")
+    highq_prior = RestrictedPrior(filename="../../gw151226_ias_points_no_m1m2_reweighting/priors/high_q.prior")
     plot_cache(highq_prior, a1=[])
     # ias_prior = RestrictedPrior(filename="priors/low_q.prior")
     # plot_cache(ias_prior, a1=0.8)

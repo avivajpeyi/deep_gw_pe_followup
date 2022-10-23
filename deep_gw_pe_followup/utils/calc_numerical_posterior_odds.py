@@ -1,5 +1,5 @@
 import glob
-from bilby.gw.result import CBCResult
+import json
 import os
 import numpy as np
 from typing import Dict
@@ -21,14 +21,22 @@ def load_results(res_regex)->Dict:
     return loaded_results
 
 def extract_res_info(path):
-    r = CBCResult.from_json(path)
-    return {
-        "log_evidence": r.log_evidence,
-        "log_evidence_err": r.log_evidence_err,
-        "q": r.priors['mass_ratio'].peak,
-        "xeff": r.priors['chi_eff'].peak,
-    }
+    with open(path, 'r') as f:
+        r = json.load(f)
+    posterior = r['posterior']['content']
+    data = posterior
+    data.update({
+        "log_evidence": r["log_evidence"],
+        "log_evidence_err": r["log_evidence_err"],
+        "q": posterior['mass_ratio'][0],
+        "xeff": posterior['chi_eff'][0],
+    })
+    return data
 
+def calc_numerical_posterior_odds(res1, res2):
+    _, pri_o = _calc_prior_odds(res1, res2)
+    post_o = posterior_odds(pri_o, res1["log_evidence"], res2["log_evidence"])
+    return dict(prior_odds=pri_o, posterior_odds=post_o)
 
 def get_results_and_compute_posterior_odds(res_regex):
     pri_odds, post_odds = {}, {}
@@ -50,7 +58,7 @@ def get_results_and_compute_posterior_odds(res_regex):
         print(f">>> prior odds = {pri_odds[k]}")
         print(f">>> bayes fact = {post_odds[k]/pri_odds[k]}")
         print(f">>> postr odds = {post_odds[k]}")
-    
+
     return pri_odds, post_odds
 
 

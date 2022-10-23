@@ -1,19 +1,16 @@
 *.gwf
-out*
+
 .ipynb_checkpoints
 *.ipynb
 *.json
 *.tar
-venv
 
 *.gzip
 
-data
 
 # Temporary and binary files
 
-*~
-*.py[cod]
+
 *.so
 *.cfg
 !setup.cfg
@@ -22,10 +19,10 @@ data
 *.pot
 */__pycache__/*
 .cache/*
-cache_*
+cache_*/
 *.pkl
 .*.swp
-*/.ipynb_checkpoints/*
+.ipynb_checkpoints
 *.pyc
 *.coverage
 *.h5
@@ -75,4 +72,6 @@ backup/*
 
 *.npz
 venv
-/tests/out_restricted_prior/
+out_restricted_prior/
+out*/
+*.dat

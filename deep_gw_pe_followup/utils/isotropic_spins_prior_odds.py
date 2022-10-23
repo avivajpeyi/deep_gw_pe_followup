@@ -47,4 +47,9 @@ def get_isotropic_spin_prior_samples(n=100000):
     prior['cos1'] = Uniform(-1, 1)
     s = pd.DataFrame(prior.sample(n))
     xeff = calc_xeff(a1=s.a1, a2=s.a2, cos1=s.cos1, cos2=s.cos2, q=s.q)
-    return pd.DataFrame(dict(q=s.q, xeff=xeff))
+    d = pd.DataFrame(dict(
+        q=s.q, mass_ratio = s.q,
+        xeff=xeff, chi_eff=xeff,
+        a_1=s.a1, a_2=s.a2, cos_tilt_1=s.cos1, cos_tilt_2=s.cos2
+    ))
+    return d
