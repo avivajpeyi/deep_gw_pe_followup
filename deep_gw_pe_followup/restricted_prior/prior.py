@@ -216,7 +216,7 @@ class RestrictedPrior(CBCPriorDict):
             max_b = max(cos2s)
 
         if min_b == max_b:
-            logger.warning(f"setting delta cos2 prior given a1={given_a1}, cos1={given_cos1}")
+            logger.warning(f"setting cos2 prior=Delta({min_b})  (given a_1={given_a1}, cos_tilt_1={given_cos1})")
             return PlaceholderDelta(peak=min_b, name="cos_tilt_2", latex_label=r"$\cos \theta_2$")
 
         return Interped(
@@ -322,6 +322,7 @@ class RestrictedPrior(CBCPriorDict):
         return 1.0
 
     def debug_sample(self, sample, fname='debug_prior.png'):
+        """Sample must contain {a_1, cos_tilt_1}"""
         self.update_restricted_priors(sample)
         nparam = len(self)
         fig, axes = plt.subplots(nparam, 1, figsize=(5, 2 * nparam))
