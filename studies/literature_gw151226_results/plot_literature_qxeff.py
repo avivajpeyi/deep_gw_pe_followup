@@ -108,7 +108,7 @@ def add_cntr(ax, x,y, color, label, levels=SIGMA_LEVELS):
     X2, Y2, H2, V, H = format_cntr_data(x,y, levels=levels)
     cmap = sns.color_palette(color, as_cmap=True)
     c = cmap(levels[-1])
-    ax.contour(X2, Y2, H2.T, V, colors=[c] * len(levels), alpha=0.5, antialiased=True)
+    ax.contour(X2, Y2, H2.T, V, colors=[c] * len(levels), alpha=0.25, antialiased=True)
     ax.contourf(
         X2,
         Y2,
@@ -116,7 +116,7 @@ def add_cntr(ax, x,y, color, label, levels=SIGMA_LEVELS):
         [V.min(), H.max()],
         cmap=cmap,
         antialiased=False,
-        alpha=0.1,
+        alpha=0.05,
     )
     ax.contourf(
             X2,
@@ -125,7 +125,7 @@ def add_cntr(ax, x,y, color, label, levels=SIGMA_LEVELS):
             [V.max(), H.max()],
             cmap=cmap,
             antialiased=False,
-        alpha=0.5
+        alpha=0.25
         )
     ax.plot(np.median(x), np.median(y), color=c, zorder=100, label=label)
     ax.scatter(np.median(x), np.median(y), color=c, zorder=100)
@@ -134,10 +134,12 @@ def add_cntr(ax, x,y, color, label, levels=SIGMA_LEVELS):
 def main():
     NITZ_QXEFF = load_qxeff_data("nitz_qxeff.npz")
     MATEU_QXEFF = load_qxeff_data("mateu_qxeff.npz")
+    CHIA_QXEFF = load_qxeff_data("chia_qxeff.npz")
     
     fig, ax = plt.subplots(1,1, figsize=(5,5))
     add_cntr(ax, NITZ_QXEFF['q'].values, NITZ_QXEFF['xeff'].values, "Oranges", "Nitz+")
     add_cntr(ax, MATEU_QXEFF['q'].values, MATEU_QXEFF['xeff'].values, "Greens", "Mateu+")
+    add_cntr(ax, CHIA_QXEFF['q'].values, CHIA_QXEFF['xeff'].values, "Purples", "Chia+")
     ax.set_xlim(0, 1.0)
     ax.set_xlabel(r"$q$")
     ax.set_ylabel(r"$\chi_{\rm eff}$")

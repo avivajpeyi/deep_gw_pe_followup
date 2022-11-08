@@ -1,0 +1,28 @@
+cff-version: 1.0.0
+title: Deep Follow-up of the Gravitational Wave Event in q-xeff space
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Avi
+    family-names: Vajpeyi
+    email: avi.vajpeyi@monash.edu
+    affiliation: >-
+      School of Physics and Astronomy, Monash
+      University, Clayton VIC 3800, Australia
+    orcid: 'https://orcid.org/0000-0002-4146-1132'
+identifiers:
+  - type: url
+    value: 'https://arxiv.org/abs/2203.13406'
+    description: The journal that uses this software.
+repository-code: 'https://github.com/avivajpeyi/deep_gw_pe_followup/'
+url: 'https://github.com/avivajpeyi/deep_gw_pe_followup/'
+abstract: >-
+  Source code for the GW "Deep Follow-up". This code is used to
+  evaluate the marginalised likelihood for GW events in the q-xeff space.
+keywords:
+  - gravitational-waves
+  - parameter-estimation
+  - bayesian-inference
+license: MIT

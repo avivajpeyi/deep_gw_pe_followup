@@ -30,6 +30,7 @@ def extract_res_info(path):
         "log_evidence_err": r["log_evidence_err"],
         "q": posterior['mass_ratio'][0],
         "xeff": posterior['chi_eff'][0],
+        'meta_data': r['meta_data'],
     })
     return data
 
