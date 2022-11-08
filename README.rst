@@ -12,8 +12,11 @@ Studies
 -------
 
 The configurations for tests and examples of the software are available in the `studies` directory.
-1. GW Injection
+
+1. GW151226 like-injection
+
 2. GW150914
+
 3. GW151226
 
 All results are uploaded in `Zenodo`_.
