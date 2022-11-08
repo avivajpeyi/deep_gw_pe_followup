@@ -5,7 +5,7 @@ Software to compute the marginalised likelihood $Z(d| q, xeff)$ for a data $d$
 containing a CBC gravitational wave event and a q-xeff point in parameter space.
 
 The method is described in the paper
-``Deep follow-up of GW151226: ordinary binary or low-mass-ratio system? <https://arxiv.org/abs/2203.13406>`''.
+''`Deep follow-up of GW151226: ordinary binary or low-mass-ratio system? <https://arxiv.org/abs/2203.13406>`_''.
 
 
 Studies
