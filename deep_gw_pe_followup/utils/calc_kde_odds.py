@@ -1,5 +1,8 @@
 from scipy import stats
 import numpy as np
+from tqdm.auto import tqdm
+
+from uncertainties import ufloat
 
 
 def standardise_params(pt):
@@ -15,16 +18,19 @@ def standardise_params(pt):
     return pt
 
 
-def calc_kde_odds(q_xeff_posterior, pt1, pt2):
+def calc_kde_odds(q_xeff_posterior, pt1, pt2, samp_frac=0.7, repetitions=100):
     """Calculate the odds of pt1 vs pt2 given the posterior samples"""
     pt1 = standardise_params(pt1)
     pt2 = standardise_params(pt2)
     q_xeff_posterior = standardise_params(q_xeff_posterior)
 
-    kde = stats.gaussian_kde(np.vstack([q_xeff_posterior['q'], q_xeff_posterior['xeff']]))
+    kde_odds = np.zeros(repetitions)
 
-    pt1_post = kde.evaluate([pt1["mass_ratio"], pt1["chi_eff"]])
+    for i in range(repetitions):
+        # Sample from the posterior
+        samp = q_xeff_posterior.sample(int(samp_frac * len(q_xeff_posterior)))
+        kde = stats.gaussian_kde(np.vstack([samp.q, samp.xeff]))
+        # calculate the odds
+        kde_odds[i] = kde([pt1["q"], pt1["xeff"]]) / kde([pt2["q"], pt2["xeff"]])
 
-    pt2_post = kde.evaluate([pt2["mass_ratio"], pt2["chi_eff"]])
-
-    return pt1_post[0] / pt2_post[0]
+    return ufloat(np.mean(kde_odds), np.std(kde_odds))

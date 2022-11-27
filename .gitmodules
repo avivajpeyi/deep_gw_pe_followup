@@ -1,9 +1,3 @@
-# [submodule "dependancies/parallel_bilby"]
-# 	path = dependancies/parallel_bilby
-# 	url = git@git.ligo.org:avi.vajpeyi/parallel_bilby.git
-# [submodule "dependancies/bilby_pipe"]
-# 	path = dependancies/bilby_pipe
-# 	url = git@git.ligo.org:avi.vajpeyi/bilby_pipe.git
 [submodule "paper"]
     path = 'paper'
     url = git@github.com:avivajpeyi/deep_followup_paper.git

@@ -4,4 +4,6 @@ parallel_bilby
 cached_property
 pandas
 joblib
+uncertainties
+tabulate
 
